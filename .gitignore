@@ -1,0 +1,9 @@
+bin/
+doc/
+lib/
+include/
+LINUX_GCC/
+TEST_UNITAIRE/
+TestUnitaire
+PokemonMaster
+testBase.base

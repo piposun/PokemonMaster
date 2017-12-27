@@ -1,0 +1,22 @@
+include $(FOLDER_PROJECT)/src/Makefiles/Makefile.master
+
+all: bin install
+
+bin:
+	@mkdir -p $(FOLDER_EXPORT_INCLUDE)
+	@mkdir -p $(FOLDER_EXPORT_LIB)
+	@$(MAKE) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJS)
+	@$(CMD_ECHO) Linking $(EXECUTABLE) ... \\c
+	@rm -f $(EXECUTABLE) $(ARCHITECTURE)/$(EXECUTABLE)
+	@cd $(ARCHITECTURE) ; $(CC) -o $(EXECUTABLE) $(OBJS) $(LDFLAGS_EXE) $(LIBPATH) $(LIBS)
+	@ln -s $(ARCHITECTURE)/$(EXECUTABLE) $(EXECUTABLE)
+	@$(CMD_ECHO) done
+
+install:
+	@mkdir -p $(FOLDER_EXPORT_BIN)
+	@$(CMD_ECHO) Installing $(EXECUTABLE)  ... \\c
+	@rm -f $(FOLDER_EXPORT_BIN)/$(EXECUTABLE)
+	@cp `pwd`/$(ARCHITECTURE)/$(EXECUTABLE) $(FOLDER_EXPORT_BIN)/$(EXECUTABLE)
+	@$(CMD_ECHO) done

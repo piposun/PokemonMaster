@@ -1,0 +1,20 @@
+include $(FOLDER_PROJECT)/src/Makefiles/Makefile.path
+
+all:
+	@for i in $(DIRECTORY_ALL) $(DIRECTORY_LIB) $(DIRECTORY_BIN); \
+	do \
+		echo Making all in $$i --debut-- ; \
+		(cd $$i ; $(MAKE)); \
+		echo Making all in $$i --fin-- ; \
+	done
+
+clean:
+	@rm -f $(FOLDER_EXPORT_INCLUDE)/*.h
+	@rm -f $(FOLDER_EXPORT_BIN)/*
+	@rm -f $(FOLDER_EXPORT_LIB)/*.a
+	@for i in $(DIRECTORY_ALL) $(DIRECTORY_LIB) $(DIRECTORY_BIN); \
+	do \
+		echo Making clean in $$i --debut-- ; \
+		(cd $$i ; $(MAKE) clean); \
+		echo Making clean in $$i --fin-- ; \
+	done
