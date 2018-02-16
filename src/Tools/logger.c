@@ -7,7 +7,7 @@
 
 #include "logger.h"
 
-void log_print(LEVEL_LOG level, const char *format, ...)
+void log_print(LEVEL_LOG level, int line, char *file, const char *format, ...)
 {
   int dbgLevel = LEVEL_LOG_DEBUG; // Niveau de log par defaut
   int max_va_list_size = 4146;  // Taille max des arguments
@@ -15,7 +15,9 @@ void log_print(LEVEL_LOG level, const char *format, ...)
   char* va_msg;                 // Chaine des arguments
   int msgSize;                  // Taille du message
   char* msg;                    // Message
+  char info[255];
   va_list args;                 // Liste des arguments
+
 
   // initialisation des arguments
   va_start(args, format);
@@ -26,26 +28,30 @@ void log_print(LEVEL_LOG level, const char *format, ...)
   // Creation de la chaine de caractere des arguments
   vsnprintf(va_msg, strlen(format) + max_va_list_size, format, args);
 
+  sprintf(info, "%s:%d ", file, line);
+
   // Taille du message
-  msgSize = strlen(va_msg) + SIZE_HEADER  + strlen( strerror(errno)) + SIZE_MARGE;
+  msgSize = strlen(info) + strlen(va_msg) + SIZE_HEADER  + strlen( strerror(errno)) + SIZE_MARGE;
 
   // Allocation de la variable du message complet
   msg = (char*)malloc(msgSize);
+
+  sprintf(msg, "\t%s", info);
 
   /* Verifie le niveau du log avec le niveau demande
      et ajoute l'entete du message ainsi que la couleur */
   if(level == LEVEL_LOG_INFO) {
     outColor = COL_INFO;
-    sprintf(msg, "\tINFO  : ");
+    sprintf(msg + strlen(info) + 1, "INFO  : ");
   } else if(level == LEVEL_LOG_WARN && dbgLevel >= LEVEL_LOG_WARN) {
     outColor = COL_WARN;
-    sprintf(msg, "\tWARN  : ");
+    sprintf(msg + strlen(info) + 1, "WARN  : ");
   } else if(level == LEVEL_LOG_DEBUG && dbgLevel >= LEVEL_LOG_DEBUG) {
     outColor = COL_DEBUG;
-    sprintf(msg, "\tDEBUG : ");
+    sprintf(msg + strlen(info) + 1, "DEBUG : ");
   } else if(level == LEVEL_LOG_ERROR) {
     outColor = COL_ERROR;
-    sprintf(msg, "\tERROR : ");
+    sprintf(msg + strlen(info) + 1, "ERROR : ");
   }
 
   // Creation de la chaine de caractere du message
@@ -66,4 +72,8 @@ void log_print(LEVEL_LOG level, const char *format, ...)
 
   // Fin de la gestion des arguments
   va_end(args);
+
+  // Liberation de la memoire
+  free(va_msg);
+  free(msg);
 }
