@@ -15,7 +15,8 @@ typedef enum {
 LEVEL_LOG_ERROR = -1, /**< Indique le niveau de log ERREUR */
 LEVEL_LOG_INFO, /**< Indique le niveau de log INFO */
 LEVEL_LOG_WARN, /**< Indique le niveau de log ALERTE */
-LEVEL_LOG_DEBUG /**< Indique le niveau de log DEBUG */
+LEVEL_LOG_DEBUG, /**< Indique le niveau de log DEBUG */
+LEVEL_LOG_MENU /**< Indique le niveau de log MENU */
 } LEVEL_LOG;
 
 /*! \def COL_ERROR
@@ -38,9 +39,15 @@ LEVEL_LOG_DEBUG /**< Indique le niveau de log DEBUG */
 */
 #define COL_DEBUG "\x1B[94m";
 
+/*! \def COL_MENU
+    \brief Definition de la couleur Green pour l'affichage dans le terminal
+*/
+#define COL_MENU "\x1B[32m";
+
 /*! \def SIZE_HEADER
     \brief Taille de l'entete du message.
 */
+
 #define SIZE_HEADER 10
 
 /*! \def SIZE_MARGE
@@ -64,7 +71,10 @@ LEVEL_LOG_DEBUG /**< Indique le niveau de log DEBUG */
     \brief Macro qui appel la fonction log_print avec le niveau LEVEL_LOG_ERROR.
 */
 #define ERROR(format, ...) log_print(LEVEL_LOG_ERROR, __LINE__, __FILE__, format, ##__VA_ARGS__)
-
+/*! \def MENU
+    \brief Macro qui appel la fonction log_print avec le niveau LEVEL_LOG_MENU.
+*/
+#define MENU(format, ...) log_print(LEVEL_LOG_MENU, __LINE__, __FILE__, format, ##__VA_ARGS__)
 /*! \fn void log_print(LEVEL_LOG level, const char *format, ...)
     \brief Ecrit les logs dans le terminal en fonction de leur niveau.
 

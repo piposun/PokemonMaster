@@ -1,3 +1,6 @@
+#ifndef HEADER_USECASES
+#define HEADER_USECASES
+
 void PokemonList(); /*prototype fonction: Afficher la liste de tous les pokemons*/
 void MyPokemonList(); /*prototype fonction: Afficher la liste des pokemons possedes*/
 void PokemonProfil(); /*prototype fonction: Afficher le profil detaille d'un pokemon*/
@@ -9,3 +12,5 @@ void SearchPokemonSameNCaracts(); /*prototype fonction: Rechercher tous les poke
 void AddPokemon(char *pokemonName); /*prototype fonction: Ajouter un pokemon dans la base*/
 void UpdatePokemon(); /*prototype fonction: Modifier une caracteristique d'un pokemon*/
 void Administrator(); /*prototype fonction: Passage en mode administration*/
+
+#endif /* HEADER_USECASES */
