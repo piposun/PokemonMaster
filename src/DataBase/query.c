@@ -43,6 +43,7 @@ char * getDataQueryByName(Query * query, int row, char * fieldName) {
 
 DATA_BASE closeQuery(Query *query) {
   free(query->data);
+  free(query->descriptor.dataField);
   free(query);
 
   return DATA_BASE_SUCCESS;
@@ -83,6 +84,7 @@ DATA_BASE commandInsert(HeaderTable *header, FILE *file, char listField[][DATA_F
 
     fseek(file, 0, SEEK_END);
     nbElement = fwrite(buff, sizeof(char) * sizeRecord, 1, file);
+    free(buff);
 
     if (nbElement != 1) {
       return DATA_BASE_FAILURE;
@@ -108,7 +110,6 @@ DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record
   }
 
   for(int i = 0; i < header->nbField; i++) {
-    DEBUG("Check field : %s width %s", header->descriptor[i].name, condition->field);
     if(strcmp(condition->field, header->descriptor[i].name) == 0) {
       switch (condition->type) {
         case CONDITION_EQUAL:
@@ -122,7 +123,6 @@ DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record
 
               memcpy(&data, pData, header->descriptor[i].size);
 
-              DEBUG("Check data : %d width %d", data, value);
               if(value == data) {
                 return DATA_BASE_SUCCESS;
               }
@@ -135,7 +135,6 @@ DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record
             case DATA_FIELD_CHAR:
             {
               char *data = record + 1 + header->descriptor[i].offset;
-              DEBUG("Check data : %s width %s", data, condition->value);
               if(strcmp(condition->value, data) == 0) {
                 return DATA_BASE_SUCCESS;
               }
@@ -216,12 +215,14 @@ DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, c
 }
 
 Query * commandSelect(HeaderTable *header, FILE *file, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField) {
-  Query *query;
+  Query *query = NULL;
   query = (Query*)malloc(sizeof(Query));
 
   if (query != NULL) {
     if (createDescriptorResult(header, query, listField, nbField) == DATA_BASE_SUCCESS) {
       query->nbRecord = 0;
+      query->data = NULL;
+
       for(int i = 0; i < header->nbRecord; i++) {
         char *buffRecord = NULL;
         char *cursorQuery = NULL;
@@ -229,7 +230,7 @@ Query * commandSelect(HeaderTable *header, FILE *file, char listField[][DATA_FIE
         //TODO
         Condition condition;
         strcpy(condition.field, "name");
-        strcpy(condition.value, "TEST");
+        strcpy(condition.value, "Pikachu");
         condition.type = CONDITION_EQUAL;
 
         buffRecord = getRecord(header, file, i);
@@ -319,12 +320,13 @@ Query * excuteQuery(DataBase *dataBase, char *sql) {
     //commandInsert(header, file, listField, nbField, listValue);
     //fflush(file);
     query = commandSelect(header, file, listField, nbField);
+    destroyHeader(header);
   }
   else {
     return NULL;
   }
 
-  //destroyHeader(header);
+
 
   return query;
 }
@@ -339,6 +341,7 @@ DATA_BASE createDescriptorResult(HeaderTable *header, Query *query, char listFie
   }
 
   query->descriptor.sizeRecord = 0;
+  query->descriptor.dataField = NULL;
   query->descriptor.dataField = (DataField*)malloc(sizeof(DataField)*query->descriptor.nbField);
 
   if (query->descriptor.dataField == NULL) {
@@ -365,7 +368,6 @@ DATA_BASE createDescriptorResult(HeaderTable *header, Query *query, char listFie
       }
     }
   }
-
 
   for(int i = 0; i < query->descriptor.nbField; i++) {
     query->descriptor.dataField[i].offset = query->descriptor.sizeRecord;
