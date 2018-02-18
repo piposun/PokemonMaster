@@ -2,7 +2,7 @@ LIBNAME = DataBase
 
 LIBS	= -lTools $(LIBX)
 
-SRCS	= dataBase.c
+SRCS	= dataBase.c query.c
 
 OBJS  = $(SRCS:.c=.o)
 HDRS	= $(SRCS:.c=.h)

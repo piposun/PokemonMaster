@@ -38,17 +38,23 @@ sqlRequest getSqlRequest (char *sqlQuerry){
     .nbOptionnalClauses=1,
     .optionnalClauseNames={"WHERE"}
   };
-  int arraySize = 0;
-  char stringArray[maxArraySize][maxStringSize];
+  int rqSize = 0;
+  char splitedRequest[maxArraySize][maxStringSize];
   sqlCommand commands[nbMaxCommand]={select,insert,update,delete};
-  splitString(sqlQuerry,stringArray,&arraySize);
-  //printStringArray(stringArray,arraySize);
-  sqlCommand command = identifyCommand(stringArray,commands);
-  //printSqlCommand(&command);
-  if (isValidSqlQuerry(sqlQuerry,stringArray,arraySize,&command)==0){
+  splitString(sqlQuerry,splitedRequest,&rqSize," ");
+  printStringArray(splitedRequest,rqSize);
+  sqlCommand command = identifyCommand(splitedRequest,commands);
+  printSqlCommand(&command);
+  if (isValidSqlQuerry(sqlQuerry,splitedRequest,rqSize,&command)==0){
     sqlRequest request;
-    request = (sqlRequest){.nameTable=stringArray[1],.nbArgs=0,.nbValues=0,.listArgs={""},.listArgs={""}};
-    printQuerryStruct(&request);
+    if (strcmp("SELECT",command.commandName)==0){
+      int argsSize = 0;
+      char splitedArgs[maxArraySize][maxStringSize];
+      splitString(splitedRequest[1],splitedArgs,&argsSize,",");
+      request = (sqlRequest){.sqlType=SELECT,.nameTable=splitedRequest[3],.nbArgs=argsSize,.nbValues=0,.listArgs={""},.listValues={""}};
+      mapStringArray(request.listArgs,splitedArgs,argsSize);
+      printQuerryStruct(&request);
+    }
   }
 }
 void printSqlCommand(sqlCommand *command){
@@ -86,6 +92,7 @@ void printStringArray(char stringArray[][maxStringSize], int arraySize){
   }
 }
 void printQuerryStruct (sqlRequest *sqlQuerry){
+  printf("Type de Requete : %d\n",sqlQuerry->sqlType);
   printf("Nom des tables:\n");
   printf("%s\n",sqlQuerry->nameTable );
   printf("Nombre d'arguments :\n");
@@ -101,11 +108,11 @@ void printQuerryStruct (sqlRequest *sqlQuerry){
     printf("%s\n",sqlQuerry->listValues[i] );
   }
 }
-void splitString(char* sqlQuerry,char stringArray[][maxStringSize],int *arraySize){
+void splitString(char* sqlQuerry,char stringArray[][maxStringSize],int *arraySize, const char *splitCharacter){
   char *token, *cpySqlQuerry;
   int counter = 0; //création de l'index du tableau
   cpySqlQuerry = strdup(sqlQuerry);  //On réserve la mémoire de la string
-  while (token = strsep(&cpySqlQuerry, " ")){//Tant qu'il est possible de segmenter la chaine par un " ", affectation de la valeur de la string dans un token
+  while (token = strsep(&cpySqlQuerry, splitCharacter)){//Tant qu'il est possible de segmenter la chaine, affectation de la valeur de la string dans un token
     strcpy(stringArray[counter],token);// Copie de la valeur du token dans l'index en cours du tableau.
     counter++; //incrément de l'index du tableau
   }
@@ -144,4 +151,9 @@ sqlCommand identifyCommand (char stringArray[][maxStringSize],sqlCommand command
   }
     sqlCommand emptySqlCommand = {"INVALIDE",0,{},0,{}};
     return emptySqlCommand;
+}
+void mapStringArray (char targetArray[][maxStringSize],char sourceArray[][maxStringSize],int size){
+  for (size_t i = 0; i < size; i++) {
+    strcpy(targetArray[i],sourceArray[i]);
+  }
 }

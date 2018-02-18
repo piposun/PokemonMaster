@@ -2,11 +2,20 @@
 #define maxStringSize (30)
 #define nbMaxClauses (8)
 #define nbMaxCommand (4)
-
+/*! \enum sqlType
+    \ brief Renseigne le type de commande.
+*/
+typedef enum{
+  SELECT = 0,
+  INSERT_INTO,
+  UPTADE,
+  DELETE
+}sqlType;
 /*! \struct sqlRequest
     \brief Structure représentant une requete à la base de données.
 */
 typedef struct{
+  sqlType sqlType;
   char* nameTable;
   int nbArgs;
   int nbValues;
@@ -24,14 +33,22 @@ typedef struct{
   int nbOptionnalClauses;
   char* optionnalClauseNames[nbMaxClauses];
 }sqlCommand;
+/*! \fn mapStringArray (char targetArray[][maxStringSize],char sourceArray[][maxStringSize],int size)
+    \brief Cette fonction tranfere index par index les chaines de caractères du tableau sourceArray vers le tableau targetArray
+    \param targetArray tableau cible
+    \param sourceArray tableau source
+    \return Pas de retour
+*/
+void mapStringArray (char targetArray[][maxStringSize],char sourceArray[][maxStringSize],int size);
 /*! \fn  splitString(char* sqlQuerry,char stringArray[][maxStringSize],int *arraySize)
-    \brief Cette fonction sépare une chaine de characteres par le séparateur " " en tableau de chaine de characteres.
+    \brief Cette fonction sépare une chaine de characteres par le séparateur " " en tableau de chaine de caractère.
     \param sqlQuerry chaine de characteres à séparer.
     \param stringArray tableau de chaine de characteres recevant les valeurs de la chaine séparé.
     \param *arraySize pointeur d'entier permettant de renseigner la taille du tableau.
+    \param splitCharacter caractère de séparation.
     \return Cette fonction ne renvoie rien.
 */
-void splitString(char* sqlQuerry,char stringArray[][maxStringSize],int *arraySize);
+void splitString(char* sqlQuerry,char stringArray[][maxStringSize],int *arraySize,const char *splitCharacter);
 /*! \fn  printQuerryStruct(sqlRequest *sqlQuerry)
     \brief Cette fonction affiche le contenu de la structure sqlRequest passée en paramètre.
     \param *sqlQuerry instance de la structure à afficher.
