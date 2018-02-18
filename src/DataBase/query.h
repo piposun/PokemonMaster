@@ -3,6 +3,15 @@
 
 #include "dataBase.h"
 
+/*! \enum DATA_FIELD
+    \brief Gere le type de la donnees.
+*/
+typedef enum {
+  CONDITION_EQUAL = 0, /**< Condition egale a */
+  CONDITION_GREAT,     /**< Condition superieur a */
+  CONDITION_LOW        /**< Condition inferieur a */
+}CONDITION;
+
 /*! \struct DescriptorTable
     \brief TODO.
 */
@@ -17,9 +26,18 @@ typedef struct {
 */
 typedef struct {
   DescriptorTable descriptor; /**< TODO. */
-  int nbRecord;                /**< TODO. */
+  int nbRecord;               /**< TODO. */
   char *data;                 /**< TODO. */
 } Query;
+
+/*! \struct Condition
+    \brief TODO.
+*/
+typedef struct {
+  char field[DATA_FIELD_MAX_CHARACTER]; /**< TODO. */
+  char value[DATA_FIELD_MAX_CHARACTER]; /**< TODO. */
+  CONDITION type;                       /**< TODO. */
+} Condition;
 
 /*! \fn DATA_BASE createDescriptorResult(HeaderTable *header, Query query, char listField[][DATA_FIELD_MAX_CHARACTER])
     \brief TODO.
@@ -99,5 +117,14 @@ Query * commandSelect(HeaderTable *header, FILE *file, char listField[][DATA_FIE
     \return TODO.
 */
 DATA_BASE commandInsert(HeaderTable *header, FILE *file, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField, char listValue[][DATA_FIELD_MAX_CHARACTER]);
+
+/*! \fn DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record)
+    \brief TODO.
+
+    \param TODO.
+    \param TODO.
+    \return TODO.
+*/
+DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record);
 
 #endif /* HEADER_QUERY */
