@@ -6,7 +6,7 @@ $(shell mkdir -p $(ARCHITECTURE))
 
 EXEC=TestUnitaire
 
-SRC= TestUnitaireMain.c DataBase.c
+SRC= TestUnitaireMain.c
 
 OBJ= $(SRC:.c=.o)
 
