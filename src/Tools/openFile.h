@@ -10,6 +10,12 @@
 
 #include <stdio.h>
 
+typedef struct {
+  char **nameFiles;
+  char extension[50];
+  int nbFiles;
+} ListFiles;
+
 /*! \enum
     \brief Gere la valeur de retour.
 */
@@ -27,5 +33,20 @@ typedef enum {
     \return Indique si l'ouverture du fichier a reussi.
 */
 int openFile(FILE **file, char *pathName, char *mode);
+
+/*! \fn ListFiles *getListFile()
+    \brief TODO
+
+    \param TODO
+    \param TODO
+*/
+ListFiles *getListFile(char *pathRep, char *extension);
+
+/*! \fn int closeListFile()
+    \brief TODO
+
+    \param TODO
+*/
+void closeListFile(ListFiles *list);
 
 #endif /* HEADER_OPEN_FILE */

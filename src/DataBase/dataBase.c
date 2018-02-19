@@ -8,39 +8,61 @@
 DataBase * connect(char *pathBase) {
   // Parcours des Tables
 
-  DataBase *dataBase;
+  DataBase *dataBase = NULL;
   dataBase = (DataBase*)malloc(sizeof(DataBase));
 
   if(dataBase == NULL) {
     return NULL;
   }
 
-  dataBase->nbTable = 1;
-  dataBase->tables = (Table*)malloc(sizeof(Table) * dataBase->nbTable);
-
-  for(int i = 0; i < dataBase->nbTable; i++) {
-    char path[50];
-
-    strcpy(dataBase->tables[i].name, "testBase");
-    sprintf(path, "../ressources/bases/%s.dbase", dataBase->tables[i].name);
-
-    if (openFile(&dataBase->tables[i].file, path, "r+") == 1) {
-      DEBUG("Ouverture du fichier %s", path);
-    }
-    else {
-      return NULL;
-    }
-  }
-
-  DEBUG("Connection a %d table(s).", dataBase->nbTable);
+  openTables(dataBase);
 
   return dataBase;
 }
 
 DATA_BASE close(DataBase *dataBase) {
-  free(dataBase->tables);
+  closeTables(dataBase);
+  free(dataBase);
 
   return DATA_BASE_SUCCESS;
+}
+
+void openTables(DataBase *dataBase) {
+  ListFiles *list = NULL;
+
+  dataBase->nbTable = 0;
+
+  list = getListFile("../ressources/bases/",  ".dbase");
+
+  if (list != NULL) {
+    dataBase->nbTable = list->nbFiles;
+    dataBase->tables = NULL;
+    dataBase->tables = (Table*)malloc(sizeof(Table) * dataBase->nbTable);
+
+    for(int i = 0; i < dataBase->nbTable; i++) {
+      char path[50];
+
+      strcpy(dataBase->tables[i].name, list->nameFiles[i]);
+      sprintf(path, "../ressources/bases/%s.dbase", dataBase->tables[i].name);
+
+      if (openFile(&dataBase->tables[i].file, path, "r+") == 1) {
+        DEBUG("Ouverture du fichier %s", path);
+      }
+    }
+
+    closeListFile(list);
+  }
+
+  DEBUG("Connection a %d table(s).", dataBase->nbTable);
+}
+
+void closeTables(DataBase *dataBase) {
+  for(int i = 0; i < dataBase->nbTable; i++) {
+    fclose(dataBase->tables[i].file);
+  }
+
+  dataBase->nbTable = 0;
+  free(dataBase->tables);
 }
 
 FILE* searchTable(DataBase *dataBase, char* nameTable) {
@@ -66,6 +88,13 @@ char * getRecord(HeaderTable *header, FILE* file, int indexRecord) {
   }
 
   return buff;
+}
+
+void destroyHeader(HeaderTable *header) {
+  if (header != NULL) {
+    free(header->descriptor);
+    free(header);
+  }
 }
 
 HeaderTable * getHeaderTable(FILE *tableFile) {
@@ -102,6 +131,7 @@ HeaderTable * getHeaderTable(FILE *tableFile) {
   DEBUG("lengthField  : %d", headerTable->lengthField);
   DEBUG("**********************");
 
+  headerTable->descriptor = NULL;
   headerTable->descriptor = (DataField*)malloc(headerTable->lengthField);
 
   if (headerTable->descriptor != NULL) {
@@ -120,4 +150,43 @@ HeaderTable * getHeaderTable(FILE *tableFile) {
   }
 
   return headerTable;
+}
+
+void restoreTables(DataBase *dataBase) {
+  ListFiles *list = NULL;
+
+  if (dataBase == NULL) {
+    return;
+  }
+
+  closeTables(dataBase);
+
+  list = getListFile("../ressources/bases/",  ".sql");
+
+  if (list != NULL) {
+    for(int i = 0; i < list->nbFiles; i++) {
+      char path[100];
+      char removeFile[100];
+      char chaine[500];
+      FILE *file;
+
+      sprintf(path, "../ressources/bases/%s.sql", list->nameFiles[i]);
+
+      if (openFile(&file, path, "r+") == 1) {
+        DEBUG("Ouverture du fichier %s", path);
+
+        while (fgets(chaine, 500, file) != NULL) { // On lit le fichier tant qu'on ne reçoit pas d'erreur (NULL)
+          printf("=> %s", chaine); // On affiche la chaîne qu'on vient de lire
+          //TODO
+          //sprintf(removeFile, "../ressources/bases/%s.dbase", list->nameFiles[i]);
+          //remove(removeFile);
+        }
+
+        fclose(file);
+      }
+    }
+
+    closeListFile(list);
+  }
+  openTables(dataBase);
 }
