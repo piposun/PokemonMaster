@@ -10,7 +10,7 @@
 #include "usecases.h"
 
 
-void PokemonList(int pokeId){
+void pokemon_list(int pokeId){
 
 Query *query = NULL;
 char  *field = NULL;
@@ -63,15 +63,15 @@ char textQuery[255]={"SELECT num,name FROM Pokemon"};
   }
 }
 
-void MyPokemonList(void){
+void my_pokemon_list(void){
 
   Query *query = NULL;
   char  *field = NULL;
   char num[]={Numero};
   char name[]={Nom};
-  char textQuery[255]={"SELECT num,name FROM Pokemon WHERE id="};
+  char textQuery[255]={"SELECT poke_id FROM Pos"};
 
-    query = excuteQuery(dataBase, "SELECT poke_id FROM Pos");
+    query = excuteQuery(dataBase, textQuery);
 
     if (query == NULL) {
       ERROR("Erreur dans la requete");
@@ -82,7 +82,8 @@ void MyPokemonList(void){
         INFO("\n--------------------------------\n");
         INFO("\n| %*s", SizeNum, num);
         INFO("| %*s|\n", SizeName, name);
-        for(int i = 1; i < query->nbRecord; i++) { //Commence à 1 pour ignorer le descripteur
+
+        for(int i = 0; i < query->nbRecord; i++) {
           for(int j = 0; j < query->descriptor.nbField; j++) {
             field = getDataQueryById(query, i, j);
             switch (getTypeQueryById(query, j)) {
@@ -93,7 +94,7 @@ void MyPokemonList(void){
               case DATA_FIELD_INT:
               {
                 DEBUG("%c, ", field); /* Affiche les pokeId reçus */
-                void PokemonList(int (int)*field);
+                void pokemon_list(int (int)*field);
               }
               break;
               case DATA_FIELD_CHAR:
@@ -114,13 +115,21 @@ void MyPokemonList(void){
       }
     }
 }
-void PokemonProfil(){
+
+void pokemon_profil(){
+
   char pokemonName[20]="\0";
+  char
+  int keyboardTest = 0; /* Variable de test de la selection des cas d'utilisation par l'operateur */
+  int requestChoice = 0; /* variable de selection du usecase de l'utilisateur */
 
-  int KeyboardChar(char *string, int nbCharMax)
-  int KeyboardInt(int *number, int min, int max);
+  MENU("\nVoulez-vous choisir le Pokemon par :");
+  MENU("\n1 - Son Nom")
+  MENU("\n2 - Son numéro")
+  MENU("\n0 - Retour au menu principal")
+  keyboardTest=KeyboardInt(requestChoice, 0, 2);
 
-
+  
 
 }
 void PokemonGenealogy(){
@@ -129,13 +138,13 @@ void PokemonGenealogy(){
 
 
 }
-void AllCouplingPossibilitiesPokemonList(){
+void all_coupling_possibilities_pokemon_list(){
   char pokemonName[20]="\0";
 
 
 
 }
-void MyCouplingPossibilitiesPokemonList(){
+void my_coupling_possibilities_pokemon_list(){
   char pokemonName[20]="\0";
 
 
@@ -153,7 +162,7 @@ void SearchPokemonSameNCaracts(){
 
 
 }
-void AddPokemon(){
+void add_pokemon(){
 
   printf("Veuillez saisir le nom du Pokemon que vous souhaitez ajouter\n");
   scanf("%s",pokemonName);
@@ -161,13 +170,13 @@ void AddPokemon(){
 
 
 }
-void UpdatePokemon(){
+void update_pokemon(){
   char fieldName[20]="\0";
   char oldFieldValue[20]="\0";
   char newFieldValue[20]="\0";
 
 }
-void Administrator(){
+void administrator(){
   char pokemonName[20]="\0";
 
 
