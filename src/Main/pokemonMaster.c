@@ -4,6 +4,7 @@
 #include "query.h"
 #include "logger.h"
 
+
 int main(int argc, char const *argv[]) {
   DataBase *dataBase = NULL;
   Query *query = NULL;
@@ -14,9 +15,11 @@ int main(int argc, char const *argv[]) {
     return 1;
   }
 
-  restoreTables(dataBase);
-
   query = excuteQuery(dataBase, "SELECT * FROM testBase");
+
+  if (query == NULL) {
+    DEBUG("NULL");
+  }
 
   if (query != NULL) {
     for(int i = 0; i < query->nbRecord; i++) {
@@ -42,8 +45,6 @@ int main(int argc, char const *argv[]) {
 
     closeQuery(query);
   }
-
-  close(dataBase);
 
   return 0;
 }

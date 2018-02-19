@@ -10,6 +10,8 @@
 #define SizeName  20 // Taille de la colonne nom
 #define SizeNum   8 // Taille de la colonne numero
 
+int choix_pokemon(int *pokeId, char *pokeName) /*prototype fonction: Choix d'un pokemon par l'operateur*/
+
 void pokemon_list(int pokeId); /*prototype fonction: Afficher la liste de tous les pokemons*/
 void my_pokemon_list(void); /*prototype fonction: Afficher la liste des pokemons possedes*/
 void pokemon_profil(); /*prototype fonction: Afficher le profil detaille d'un pokemon*/
