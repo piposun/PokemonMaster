@@ -54,7 +54,7 @@ typedef struct{
 /*! \fn mapStringArray (char targetArray[][maxStringSize],char sourceArray[][maxStringSize],int size)
     \brief Cette fonction tranfere index par index les chaines de caractères du tableau sourceArray vers le tableau targetArray
     \param targetArray tableau cible
-    \param sourceArray tableau source
+    \param sourceArray tableau sourcechar
     \return Pas de retour
 */
 void mapStringArray (char targetArray[][maxStringSize],char sourceArray[][maxStringSize],int size);
@@ -124,3 +124,6 @@ sqlRequest getSqlRequest (char *sqlQuerry);
 /*TODO
 */
 whereClause getWhereClause (char stringArray[][maxStringSize],int arraySize);
+/*TODO
+*/
+void removeChar (char string[], char removedChar);

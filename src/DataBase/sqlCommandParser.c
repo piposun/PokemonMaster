@@ -42,6 +42,8 @@ sqlRequest getSqlRequest (char *sqlQuerry){
   char splitedRequest[maxArraySize][maxStringSize];
   int argsSize = 0;
   char splitedArgs[maxArraySize][maxStringSize];
+  int valuesSize = 0;
+  char splitedValues[maxArraySize][maxStringSize];
   sqlCommand commands[nbMaxCommand]={select,insert,update,delete};
   splitString(sqlQuerry,splitedRequest,&rqSize," ");
   //printf("string Array :\n");
@@ -62,7 +64,18 @@ sqlRequest getSqlRequest (char *sqlQuerry){
         .where=getWhereClause(splitedRequest,rqSize)};
       mapStringArray(request.listArgs,splitedArgs,argsSize);
     }else if (strcmp("INSERT INTO",command.commandName)==0){
-      request.sqlType=INSERT_INTO;
+      splitString(splitedRequest[3],splitedValues,&valuesSize,",");
+      removeChar(splitedValues[0],'(');
+      removeChar(splitedValues[valuesSize-1],')');
+      request = (sqlRequest){
+        .sqlType = INSERT_INTO,
+        .nameTable = splitedRequest[1],
+        .nbArgs = 0,
+        .nbValues = valuesSize,
+        .listArgs={""},
+        .listValues={""},
+        .where=getWhereClause(splitedRequest,rqSize)};
+        mapStringArray(request.listValues,splitedValues,valuesSize);
     }else if (strcmp("UPDATE",command.commandName)==0){
       request.sqlType=UPDATE;
     }else if (strcmp("DELETE",command.commandName)==0){
@@ -131,8 +144,13 @@ void splitString(char* sqlQuerry,char stringArray[][maxStringSize],int *arraySiz
   int counter = 0; //création de l'index du tableau
   cpySqlQuerry = strdup(sqlQuerry);  //On réserve la mémoire de la string
   while (token = strsep(&cpySqlQuerry, splitCharacter)){//Tant qu'il est possible de segmenter la chaine, affectation de la valeur de la string dans un token
+    if (strcmp(token,"INSERT")==0 || strcmp(token,"INTO")==0){
+      strcpy(stringArray[0],"INSERT INTO");//gestion de l'exception de INSERT INTO
+      counter = 1;
+    }else{
     strcpy(stringArray[counter],token);// Copie de la valeur du token dans l'index en cours du tableau.
     counter++; //incrément de l'index du tableau
+  }
   }
   *arraySize = counter;
   free(cpySqlQuerry);
@@ -188,4 +206,16 @@ whereClause getWhereClause (char stringArray[][maxStringSize],int arraySize){
     }
   }
   return where;
+}
+void removeChar (char string[], char removedChar){
+  int i,j;
+  for (size_t i = 0; string[i] != 0; ++i) {
+    while (string[i]==removedChar) {
+      j=i;
+      while(string[j]!=0){
+        string[j]=string[j+1];
+        ++j;
+      }
+    }
+  }
 }
