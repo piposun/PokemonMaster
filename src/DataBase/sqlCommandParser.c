@@ -32,9 +32,9 @@ sqlRequest getSqlRequest (char *sqlQuerry){
     .optionnalClauseNames={"WHERE"}
   };
   sqlCommand delete = (sqlCommand){
-    .commandName="DELETE",
+    .commandName="DELETE FROM",
     .nbMandatoryClauses=1,
-    .mandatoryClauseNames={"DELETE"},
+    .mandatoryClauseNames={"DELETE FROM"},
     .nbOptionnalClauses=1,
     .optionnalClauseNames={"WHERE"}
   };
@@ -87,14 +87,15 @@ sqlRequest getSqlRequest (char *sqlQuerry){
         .listValues={""},
         .where=getWhereClause(splitedRequest,rqSize)};
         mapStringArray(request.listArgs,splitedArgs,argsSize);
-    }else if (strcmp("DELETE",command.commandName)==0){
+    }else if (strcmp("DELETE FROM",command.commandName)==0){
       request = (sqlRequest){
         .sqlType = DELETE,
-        .nameTable ="",
+        .nameTable =splitedRequest[1],
         .nbArgs = 0,
         .nbValues = 0,
         .listArgs={""},
-        .listValues={""}
+        .listValues={""},
+        .where=getWhereClause(splitedRequest,rqSize)
       };
     }
     printQuerryStruct(&request);
@@ -164,6 +165,9 @@ void splitString(char* sqlQuerry,char stringArray[][maxStringSize],int *arraySiz
     if (strcmp(token,"INSERT")==0 || strcmp(token,"INTO")==0){
       strcpy(stringArray[0],"INSERT INTO");//gestion de l'exception de INSERT INTO
       counter = 1;
+    }else if (strcmp(token,"DELETE")==0 || strcmp(token,"FROM")==0){
+      strcpy(stringArray[0],"DELETE FROM");//gestion de l'exception de DELETE FROM
+      counter = 1;
     }else{
     strcpy(stringArray[counter],token);// Copie de la valeur du token dans l'index en cours du tableau.
     counter++; //incrément de l'index du tableau
@@ -174,10 +178,10 @@ void splitString(char* sqlQuerry,char stringArray[][maxStringSize],int *arraySiz
 }
 int isValidSqlQuerry (char *sqlQuerry, char stringArray[][maxStringSize],int arraySize,sqlCommand *command){
   //Le nombre d'éléments du tableau doit toujours être un multiple de 2, sinon la paire clause / argument n'est pas respecté.
-  if (arraySize % 2 != 0){
+  /*if (arraySize % 2 != 0){
     printf("Nombre d'arguments non valide");
     return 1;
-  }
+  }*/
   for (size_t i = 0,j=0; i <= (command->nbMandatoryClauses),j<command->nbMandatoryClauses; i+=2,j++) {
     //i est l'index du tableau de string, il doit être incrémenté par 2 puisque les arguments dans le tableau sont toujours en position multiple de 2.
     //j représente l'index dans le tableau de clauses.
