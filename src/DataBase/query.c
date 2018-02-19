@@ -102,19 +102,140 @@ DATA_BASE commandInsert(HeaderTable *header, FILE *file, char listField[][DATA_F
   return DATA_BASE_SUCCESS;
 }
 
+<<<<<<< HEAD
+=======
+DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record) {
+  if (condition == NULL) {
+    return DATA_BASE_SUCCESS;
+  }
+
+  for(int i = 0; i < header->nbField; i++) {
+    DEBUG("Check field : %s width %s", header->descriptor[i].name, condition->field);
+    if(strcmp(condition->field, header->descriptor[i].name) == 0) {
+      switch (condition->type) {
+        case CONDITION_EQUAL:
+        {
+          switch (header->descriptor[i].type) {
+            case DATA_FIELD_INT:
+            {
+              int value = atoi(condition->value);
+              int data;
+              char *pData = record + 1 + header->descriptor[i].offset;
+
+              memcpy(&data, pData, header->descriptor[i].size);
+
+              DEBUG("Check data : %d width %d", data, value);
+              if(value == data) {
+                return DATA_BASE_SUCCESS;
+              }
+              else
+              {
+                return DATA_BASE_FAILURE;
+              }
+            }
+            break;
+            case DATA_FIELD_CHAR:
+            {
+              char *data = record + 1 + header->descriptor[i].offset;
+              DEBUG("Check data : %s width %s", data, condition->value);
+              if(strcmp(condition->value, data) == 0) {
+                return DATA_BASE_SUCCESS;
+              }
+              else
+              {
+                return DATA_BASE_FAILURE;
+              }
+            }
+            break;
+            default:
+            break;
+          }
+
+        }
+        break;
+        case CONDITION_GREAT:
+        case CONDITION_LOW:
+        default:
+        break;
+      }
+    }
+  }
+  return DATA_BASE_FAILURE;
+}
+
+DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField, char listValue[][DATA_FIELD_MAX_CHARACTER]) {
+  int sizeRecord = header->lengthRecord/header->nbRecord;
+  int nbElement = 0;
+
+  for(int i = 0; i < header->nbRecord; i++) {
+    char *record = NULL;
+
+    record = getRecord(header, file, i);
+
+    if (checkCondition(header, condition, record) == DATA_BASE_SUCCESS) {
+      for(int k = 0; k < nbField; k++) {
+        for(int l = 0; l < header->nbField; l++) {
+          if(strcmp(listField[k], header->descriptor[l].name) == 0) {
+            switch (header->descriptor[l].type) {
+              case DATA_FIELD_INT:
+              {
+                int value = atoi(listValue[k]);
+                memcpy(record+1+header->descriptor[l].offset, &value, header->descriptor[l].size);
+              }
+              break;
+              case DATA_FIELD_CHAR:
+              {
+                memcpy(record+1+header->descriptor[l].offset, listValue[k], header->descriptor[l].size);
+              }
+              break;
+              default:
+              break;
+            }
+
+            fseek(file, -(sizeof(char) * sizeRecord) , SEEK_CUR);
+            nbElement = fwrite(record, sizeof(char) * sizeRecord, 1, file);
+
+            if (nbElement != 1) {
+              return DATA_BASE_FAILURE;
+            }
+
+            break;
+          }
+        }
+
+        if (nbElement == 1) {
+          break;
+        }
+      }
+    }
+
+    if (record != NULL) {
+      free(record);
+    }
+  }
+
+  return DATA_BASE_SUCCESS;
+}
+
+>>>>>>> dev_adrien
 Query * commandSelect(HeaderTable *header, FILE *file, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField) {
   Query *query;
   query = (Query*)malloc(sizeof(Query));
 
   if (query != NULL) {
     if (createDescriptorResult(header, query, listField, nbField) == DATA_BASE_SUCCESS) {
+<<<<<<< HEAD
       query->data = (char*)malloc(query->descriptor.sizeRecord * header->nbRecord);
 
       query->nbRecord = header->nbRecord;
+=======
+      query->nbRecord = 0;
+>>>>>>> dev_adrien
       for(int i = 0; i < header->nbRecord; i++) {
         char *buffRecord = NULL;
         char *cursorQuery = NULL;
         char *cursorRecord = NULL;
+<<<<<<< HEAD
 
         buffRecord = getRecord(header, file, i);
 
@@ -126,6 +247,42 @@ Query * commandSelect(HeaderTable *header, FILE *file, char listField[][DATA_FIE
               cursorRecord += header->descriptor[j].offset + 1;
               cursorQuery  += query->descriptor.dataField[k].offset;
               memcpy(cursorQuery, cursorRecord, query->descriptor.dataField[k].size);
+=======
+        //TODO
+        Condition condition;
+        strcpy(condition.field, "name");
+        strcpy(condition.value, "TEST");
+        condition.type = CONDITION_EQUAL;
+
+        buffRecord = getRecord(header, file, i);
+
+        if (checkCondition(header, &condition, buffRecord) == DATA_BASE_SUCCESS) {
+
+          query->nbRecord++;
+          if (query->data == NULL) {
+            query->data = (char*)malloc(query->descriptor.sizeRecord);
+          }
+          else {
+            query->data = (char*)realloc(query->data, query->descriptor.sizeRecord * query->nbRecord);
+          }
+
+          if (query->data == NULL) {
+            if (buffRecord != NULL) {
+              free(buffRecord);
+            }
+            return NULL;
+          }
+
+          for(int k = 0; k < query->descriptor.nbField; k++) {
+            cursorQuery = query->data + ((query->nbRecord-1) * query->descriptor.sizeRecord);
+            cursorRecord = buffRecord;
+            for(int j = 0; j < header->nbField; j++) {
+              if(strcmp(query->descriptor.dataField[k].name, header->descriptor[j].name) == 0) {
+                cursorRecord += header->descriptor[j].offset + 1;
+                cursorQuery  += query->descriptor.dataField[k].offset;
+                memcpy(cursorQuery, cursorRecord, query->descriptor.dataField[k].size);
+              }
+>>>>>>> dev_adrien
             }
           }
         }
@@ -147,6 +304,10 @@ Query * commandSelect(HeaderTable *header, FILE *file, char listField[][DATA_FIE
 Query * excuteQuery(DataBase *dataBase, char *sql) {
   Query *query = NULL;
   FILE  *file;
+<<<<<<< HEAD
+=======
+  Condition condition;
+>>>>>>> dev_adrien
 
   if (dataBase == NULL) {
     ERROR("La dataBase est NULL !");
@@ -162,12 +323,30 @@ Query * excuteQuery(DataBase *dataBase, char *sql) {
       return NULL;
     }
 
+<<<<<<< HEAD
+=======
+
+    strcpy(condition.field, "name");
+    strcpy(condition.value, "Pikachu");
+    condition.type = CONDITION_EQUAL;
+
+    char listUpdateField[1][DATA_FIELD_MAX_CHARACTER] = {"id"};
+    char listUpdateValue[1][DATA_FIELD_MAX_CHARACTER] = {"1"};
+    int nbUpdateField = 1;
+
+    commandUpdate(header, file, &condition, listUpdateField, nbUpdateField, listUpdateValue);
+
+>>>>>>> dev_adrien
     // TODO code Adrien
     /*char listField[2][DATA_FIELD_MAX_CHARACTER] = {"id", "name"};
     int nbField = 2;
     char listValue[2][DATA_FIELD_MAX_CHARACTER] = {"100", "TEST"};*/
 
+<<<<<<< HEAD
     char listField[1][DATA_FIELD_MAX_CHARACTER] = {"*"};
+=======
+    char listField[1][DATA_FIELD_MAX_CHARACTER] = {"id"};
+>>>>>>> dev_adrien
     int nbField = 1;
 
     //commandInsert(header, file, listField, nbField, listValue);
@@ -201,6 +380,7 @@ DATA_BASE createDescriptorResult(HeaderTable *header, Query *query, char listFie
 
   memset(query->descriptor.dataField, 0, sizeof(DataField)*query->descriptor.nbField);
 
+<<<<<<< HEAD
   for(int i = 0; i < query->descriptor.nbField; i++) {
     for(int j = 0; j < header->nbField; j++) {
       if((nbField == 1 && strcmp(listField[0], "*")==0) || (strcmp(listField[i], header->descriptor[j].name) == 0)) {
@@ -213,6 +393,28 @@ DATA_BASE createDescriptorResult(HeaderTable *header, Query *query, char listFie
     }
   }
 
+=======
+  if (nbField == 1 && strcmp(listField[0], "*")==0) {
+    for(int i = 0; i < header->nbField; i++) {
+      memcpy(&query->descriptor.dataField[i], &header->descriptor[i], sizeof(DataField));
+    }
+  }
+  else {
+    for(int i = 0; i < query->descriptor.nbField; i++) {
+      for(int j = 0; j < header->nbField; j++) {
+        if(strcmp(listField[i], header->descriptor[j].name) == 0) {
+          memcpy(&query->descriptor.dataField[i], &header->descriptor[j], sizeof(DataField));
+        }
+      }
+      if(strlen(query->descriptor.dataField[i].name) == 0) {
+        ERROR("La colonne '%s' n'existe pas.", listField[i]);
+        return DATA_BASE_FAILURE;
+      }
+    }
+  }
+
+
+>>>>>>> dev_adrien
   for(int i = 0; i < query->descriptor.nbField; i++) {
     query->descriptor.dataField[i].offset = query->descriptor.sizeRecord;
     query->descriptor.sizeRecord += query->descriptor.dataField[i].size;
