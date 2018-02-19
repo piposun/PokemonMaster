@@ -87,10 +87,6 @@ void my_pokemon_list(void){
           for(int j = 0; j < query->descriptor.nbField; j++) {
             field = getDataQueryById(query, i, j);
             switch (getTypeQueryById(query, j)) {
-              case 0:
-              {
-                INFO("\nIl n'y a pas de donnees correspondant aux criteres demandes.\n");
-              }
               case DATA_FIELD_INT:
               {
                 DEBUG("%c, ", field); /* Affiche les pokeId reçus */
@@ -129,7 +125,7 @@ void pokemon_profil(){
   MENU("\n0 - Retour au menu principal")
   keyboardTest=KeyboardInt(requestChoice, 0, 2);
 
-  
+
 
 }
 void PokemonGenealogy(){
