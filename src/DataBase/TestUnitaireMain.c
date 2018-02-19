@@ -17,7 +17,7 @@ int main(int argc, char const *argv[]) {
     DataField dataField;
     int champ1 = 30;
     char champ2[DATA_FIELD_MAX_CHARACTER] = "Pikachu";
-    char actif = 'A';
+    char actif = CHARACTER_RECORD_VALID;
 
     headerTable.valid = 1;
     headerTable.lastUpdate.day   = 28;

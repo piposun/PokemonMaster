@@ -10,10 +10,35 @@
 
 #include <stdio.h>
 
+/*! \def CHARACTER_RECORD_VALID
+    \brief TODO.
+*/
+#define CHARACTER_RECORD_VALID '\0'
+
+/*! \def CHARACTER_RECORD_INVALID
+    \brief TODO.
+*/
+#define CHARACTER_RECORD_INVALID '#'
+
 /*! \def DATA_FIELD_MAX_CHARACTER
     \brief TODO.
 */
 #define DATA_FIELD_MAX_CHARACTER 20
+
+/*! \def TABLE_MAX_COLUM_CHARACTER
+    \brief TODO.
+*/
+#define TABLE_MAX_COLUM_CHARACTER 1000
+
+/*! \def PATH_MAX_CHARACTER
+    \brief TODO.
+*/
+#define PATH_MAX_CHARACTER 100
+
+/*! \def PATH_BASE
+    \brief TODO.
+*/
+#define PATH_BASE "../ressources/bases/"
 
 /*! \struct Date
     \brief TODO.
@@ -44,7 +69,8 @@ typedef struct {
     \brief Gere le type de la donnees.
 */
 typedef enum {
-  DATA_FIELD_INT = 0, /**< Type int. */
+  DATA_FIELD_PK = 0,  /**< Type int. */
+  DATA_FIELD_INT,     /**< Type int. */
   DATA_FIELD_CHAR,    /**< Type char. */
   DATA_FIELD_FLOAT,   /**< Type float. */
   DATA_FIELD_DOUBLE,  /**< Type double. */
@@ -133,6 +159,14 @@ FILE* searchTable(DataBase *dataBase, char* nameTable);
     \return TODO.
 */
 char * getRecord(HeaderTable *header, FILE* file, int indexRecord);
+
+/*! \fn DATA_BASE recordIsValid(char *record)
+    \brief TODO.
+
+    \param TODO.
+    \return TODO.
+*/
+DATA_BASE recordIsValid(char *record);
 
 /*! \fn openTables(DataBase *dataBase)
     \brief TODO.

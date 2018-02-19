@@ -12,6 +12,13 @@ DATA_FIELD getTypeQueryById(Query * query, int index) {
   return query->descriptor.dataField[index].type;
 }
 
+int getSizeQueryById(Query * query, int index) {
+  if (index < 0 || index >= query->descriptor.nbField) {
+    return 0;
+  }
+  return query->descriptor.dataField[index].size;
+}
+
 char * getNameQueryById(Query * query, int index) {
   if (index < 0 || index >= query->descriptor.nbField) {
     return NULL;
@@ -56,7 +63,7 @@ DATA_BASE commandInsert(HeaderTable *header, FILE *file, char listField[][DATA_F
 
   buff = (char*)malloc(sizeof(char) * sizeRecord);
   memset(buff, 0 , sizeof(char) * sizeRecord);
-  buff[0] = 'A';
+  buff[0] = CHARACTER_RECORD_VALID;
 
   if (buff != NULL) {
     for(int i = 0; i < nbField; i++) {
@@ -160,6 +167,81 @@ DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record
   return DATA_BASE_FAILURE;
 }
 
+DATA_BASE commandCreateTable() {
+  FILE *file;
+
+  file = fopen("../../ressources/bases/testBase.dbase", "w+");
+
+  if (file != NULL) {
+    HeaderTable headerTable;
+    DataField dataField;
+    int champ1 = 30;
+    char champ2[DATA_FIELD_MAX_CHARACTER] = "Pikachu";
+    char actif = CHARACTER_RECORD_VALID;
+
+    int sizeRecord = sizeof(char) + sizeof(int) + sizeof(char) * DATA_FIELD_MAX_CHARACTER;
+
+    headerTable.valid = 1;
+    headerTable.lastUpdate.day   = 28;
+    headerTable.lastUpdate.month = 12;
+    headerTable.lastUpdate.year  = 17;
+    headerTable.nbRecord = 1;
+    headerTable.nbField  = 2;
+    headerTable.lengthHeader = sizeof(HeaderTable);
+    headerTable.lengthRecord = headerTable.nbRecord * sizeRecord;
+    headerTable.lengthField  = headerTable.nbField * sizeof(DataField);
+    fwrite(&headerTable, sizeof(HeaderTable), 1, file);
+
+    dataField.offset = 0;
+    dataField.type = DATA_FIELD_INT;
+    strcpy(dataField.name, "id");
+    dataField.size = sizeof(int);
+    fwrite(&dataField, sizeof(DataField), 1, file);
+
+    dataField.offset = sizeof(int);
+    dataField.type = DATA_FIELD_CHAR;
+    strcpy(dataField.name, "name");
+    dataField.size = sizeof(char) * DATA_FIELD_MAX_CHARACTER;
+    fwrite(&dataField, sizeof(DataField), 1, file);
+
+    fwrite(&actif, sizeof(char), 1, file);
+    fwrite(&champ1, sizeof(int), 1, file);
+    fwrite(champ2, sizeof(char) * DATA_FIELD_MAX_CHARACTER, 1, file);
+  }
+
+  fclose(file);
+
+  return DATA_BASE_SUCCESS;
+}
+
+DATA_BASE commandDelete(HeaderTable *header, FILE *file, Condition *condition) {
+  int sizeRecord = header->lengthRecord/header->nbRecord;
+  int nbElement = 0;
+
+  for(int i = 0; i < header->nbRecord; i++) {
+    char *record = NULL;
+
+    record = getRecord(header, file, i);
+
+    if (checkCondition(header, condition, record) == DATA_BASE_SUCCESS) {
+      record[0] = CHARACTER_RECORD_INVALID;
+
+      fseek(file, -(sizeof(char) * sizeRecord) , SEEK_CUR);
+      nbElement = fwrite(record, sizeof(char) * sizeRecord, 1, file);
+
+      if (nbElement != 1) {
+        return DATA_BASE_FAILURE;
+      }
+    }
+
+    if (record != NULL) {
+      free(record);
+    }
+  }
+
+  return DATA_BASE_SUCCESS;
+}
+
 DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField, char listValue[][DATA_FIELD_MAX_CHARACTER]) {
   int sizeRecord = header->lengthRecord/header->nbRecord;
   int nbElement = 0;
@@ -235,36 +317,37 @@ Query * commandSelect(HeaderTable *header, FILE *file, char listField[][DATA_FIE
 
         buffRecord = getRecord(header, file, i);
 
-        if (checkCondition(header, &condition, buffRecord) == DATA_BASE_SUCCESS) {
+        if (recordIsValid(buffRecord) == DATA_BASE_SUCCESS) {
+          if (checkCondition(header, &condition, buffRecord) == DATA_BASE_SUCCESS) {
 
-          query->nbRecord++;
-          if (query->data == NULL) {
-            query->data = (char*)malloc(query->descriptor.sizeRecord);
-          }
-          else {
-            query->data = (char*)realloc(query->data, query->descriptor.sizeRecord * query->nbRecord);
-          }
-
-          if (query->data == NULL) {
-            if (buffRecord != NULL) {
-              free(buffRecord);
+            query->nbRecord++;
+            if (query->data == NULL) {
+              query->data = (char*)malloc(query->descriptor.sizeRecord);
             }
-            return NULL;
-          }
+            else {
+              query->data = (char*)realloc(query->data, query->descriptor.sizeRecord * query->nbRecord);
+            }
 
-          for(int k = 0; k < query->descriptor.nbField; k++) {
-            cursorQuery = query->data + ((query->nbRecord-1) * query->descriptor.sizeRecord);
-            cursorRecord = buffRecord;
-            for(int j = 0; j < header->nbField; j++) {
-              if(strcmp(query->descriptor.dataField[k].name, header->descriptor[j].name) == 0) {
-                cursorRecord += header->descriptor[j].offset + 1;
-                cursorQuery  += query->descriptor.dataField[k].offset;
-                memcpy(cursorQuery, cursorRecord, query->descriptor.dataField[k].size);
+            if (query->data == NULL) {
+              if (buffRecord != NULL) {
+                free(buffRecord);
+              }
+              return NULL;
+            }
+
+            for(int k = 0; k < query->descriptor.nbField; k++) {
+              cursorQuery = query->data + ((query->nbRecord-1) * query->descriptor.sizeRecord);
+              cursorRecord = buffRecord;
+              for(int j = 0; j < header->nbField; j++) {
+                if(strcmp(query->descriptor.dataField[k].name, header->descriptor[j].name) == 0) {
+                  cursorRecord += header->descriptor[j].offset + 1;
+                  cursorQuery  += query->descriptor.dataField[k].offset;
+                  memcpy(cursorQuery, cursorRecord, query->descriptor.dataField[k].size);
+                }
               }
             }
           }
         }
-
         if (buffRecord != NULL) {
           free(buffRecord);
         }
@@ -320,6 +403,7 @@ Query * excuteQuery(DataBase *dataBase, char *sql) {
     //commandInsert(header, file, listField, nbField, listValue);
     //fflush(file);
     query = commandSelect(header, file, listField, nbField);
+
     destroyHeader(header);
   }
   else {

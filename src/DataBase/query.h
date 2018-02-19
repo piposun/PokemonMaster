@@ -73,6 +73,16 @@ DATA_BASE closeQuery(Query *query);
 */
 DATA_FIELD getTypeQueryById(Query * query, int index);
 
+/*! \fn int getSizeQueryById(Query * query, int index)
+    \brief TODO.
+
+    \param dataBase Reference de la DataBase.
+    \param TODO.
+    \return TODO.
+*/
+int getSizeQueryById(Query * query, int index);
+
+
 /*! \fn char * getNameQueryById(Query * query, int index)
     \brief TODO.
 
@@ -117,6 +127,24 @@ Query * commandSelect(HeaderTable *header, FILE *file, char listField[][DATA_FIE
     \return TODO.
 */
 DATA_BASE commandInsert(HeaderTable *header, FILE *file, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField, char listValue[][DATA_FIELD_MAX_CHARACTER]);
+
+/*! \fn DATA_BASE commandDelete(HeaderTable *header, FILE *file, Condition *condition);
+    \brief TODO.
+
+    \param TODO.
+    \param TODO.
+    \return TODO.
+*/
+DATA_BASE commandDelete(HeaderTable *header, FILE *file, Condition *condition);
+
+/*! \fn DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField, char listValue[][DATA_FIELD_MAX_CHARACTER])
+    \brief TODO.
+
+    \param TODO.
+    \param TODO.
+    \return TODO.
+*/
+DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField, char listValue[][DATA_FIELD_MAX_CHARACTER]);
 
 /*! \fn DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record)
     \brief TODO.

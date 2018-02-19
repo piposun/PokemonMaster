@@ -32,7 +32,7 @@ void openTables(DataBase *dataBase) {
 
   dataBase->nbTable = 0;
 
-  list = getListFile("../ressources/bases/",  ".dbase");
+  list = getListFile(PATH_BASE,  ".dbase");
 
   if (list != NULL) {
     dataBase->nbTable = list->nbFiles;
@@ -43,7 +43,7 @@ void openTables(DataBase *dataBase) {
       char path[50];
 
       strcpy(dataBase->tables[i].name, list->nameFiles[i]);
-      sprintf(path, "../ressources/bases/%s.dbase", dataBase->tables[i].name);
+      sprintf(path, "%s%s.dbase", PATH_BASE, dataBase->tables[i].name);
 
       if (openFile(&dataBase->tables[i].file, path, "r+") == 1) {
         DEBUG("Ouverture du fichier %s", path);
@@ -88,6 +88,14 @@ char * getRecord(HeaderTable *header, FILE* file, int indexRecord) {
   }
 
   return buff;
+}
+
+DATA_BASE recordIsValid(char *record) {
+  if (record[0] == CHARACTER_RECORD_VALID) {
+    return DATA_BASE_SUCCESS;
+  }
+
+  return DATA_BASE_FAILURE;
 }
 
 void destroyHeader(HeaderTable *header) {
@@ -161,22 +169,22 @@ void restoreTables(DataBase *dataBase) {
 
   closeTables(dataBase);
 
-  list = getListFile("../ressources/bases/",  ".sql");
+  list = getListFile(PATH_BASE,  ".sql");
 
   if (list != NULL) {
     for(int i = 0; i < list->nbFiles; i++) {
-      char path[100];
-      char removeFile[100];
-      char chaine[500];
-      FILE *file;
+      char path[PATH_MAX_CHARACTER];
+      char removeFile[PATH_MAX_CHARACTER];
+      char chaine[TABLE_MAX_COLUM_CHARACTER];
+      FILE *file = NULL;
 
-      sprintf(path, "../ressources/bases/%s.sql", list->nameFiles[i]);
+      sprintf(path, "%s%s.sql", PATH_BASE, list->nameFiles[i]);
 
       if (openFile(&file, path, "r+") == 1) {
         DEBUG("Ouverture du fichier %s", path);
 
-        while (fgets(chaine, 500, file) != NULL) { // On lit le fichier tant qu'on ne reçoit pas d'erreur (NULL)
-          printf("=> %s", chaine); // On affiche la chaîne qu'on vient de lire
+        while (fgets(chaine, TABLE_MAX_COLUM_CHARACTER, file) != NULL) { // On lit le fichier tant qu'on ne reçoit pas d'erreur (NULL)
+          //printf("=> %s", chaine); // On affiche la chaîne qu'on vient de lire
           //TODO
           //sprintf(removeFile, "../ressources/bases/%s.dbase", list->nameFiles[i]);
           //remove(removeFile);
