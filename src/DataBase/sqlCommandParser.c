@@ -40,21 +40,35 @@ sqlRequest getSqlRequest (char *sqlQuerry){
   };
   int rqSize = 0;
   char splitedRequest[maxArraySize][maxStringSize];
+  int argsSize = 0;
+  char splitedArgs[maxArraySize][maxStringSize];
   sqlCommand commands[nbMaxCommand]={select,insert,update,delete};
   splitString(sqlQuerry,splitedRequest,&rqSize," ");
-  printStringArray(splitedRequest,rqSize);
+  //printf("string Array :\n");
+  //printStringArray(splitedRequest,rqSize);
   sqlCommand command = identifyCommand(splitedRequest,commands);
-  printSqlCommand(&command);
+  //printSqlCommand(&command);
   if (isValidSqlQuerry(sqlQuerry,splitedRequest,rqSize,&command)==0){
     sqlRequest request;
     if (strcmp("SELECT",command.commandName)==0){
-      int argsSize = 0;
-      char splitedArgs[maxArraySize][maxStringSize];
       splitString(splitedRequest[1],splitedArgs,&argsSize,",");
-      request = (sqlRequest){.sqlType=SELECT,.nameTable=splitedRequest[3],.nbArgs=argsSize,.nbValues=0,.listArgs={""},.listValues={""}};
+      request = (sqlRequest){
+        .sqlType=SELECT,
+        .nameTable=splitedRequest[3],
+        .nbArgs=argsSize,
+        .nbValues=0,
+        .listArgs={""},
+        .listValues={""},
+        .where=getWhereClause(splitedRequest,rqSize)};
       mapStringArray(request.listArgs,splitedArgs,argsSize);
-      printQuerryStruct(&request);
+    }else if (strcmp("INSERT INTO",command.commandName)==0){
+      request.sqlType=INSERT_INTO;
+    }else if (strcmp("UPDATE",command.commandName)==0){
+      request.sqlType=UPDATE;
+    }else if (strcmp("DELETE",command.commandName)==0){
+      request.sqlType=DELETE;
     }
+    printQuerryStruct(&request);
   }
 }
 void printSqlCommand(sqlCommand *command){
@@ -107,6 +121,10 @@ void printQuerryStruct (sqlRequest *sqlQuerry){
   for (size_t i = 0; i < sqlQuerry->nbValues; i++) {
     printf("%s\n",sqlQuerry->listValues[i] );
   }
+  printf("Structure Where:\n");
+  printf("target value :%s\n",sqlQuerry->where.targetValue );
+  printf("Operator :%s\n",sqlQuerry->where.operatorField );
+  printf("source value:%s\n",sqlQuerry->where.sourceValue );
 }
 void splitString(char* sqlQuerry,char stringArray[][maxStringSize],int *arraySize, const char *splitCharacter){
   char *token, *cpySqlQuerry;
@@ -156,4 +174,18 @@ void mapStringArray (char targetArray[][maxStringSize],char sourceArray[][maxStr
   for (size_t i = 0; i < size; i++) {
     strcpy(targetArray[i],sourceArray[i]);
   }
+}
+whereClause getWhereClause (char stringArray[][maxStringSize],int arraySize){
+  whereClause where = (whereClause){.targetValue="",.operatorField="",.sourceValue=""};
+  for (size_t i = 0; i < arraySize; i++) {
+    if (strcmp(stringArray[i],"WHERE")==0) {
+      int whereSize = 0;
+      char splitedWhere[maxArraySize][maxStringSize];
+      splitString(stringArray[i+1],splitedWhere,&whereSize,"=");
+      strcpy(where.targetValue,splitedWhere[0]);
+      strcpy(where.operatorField,"=");
+      strcpy(where.sourceValue,splitedWhere[1]);
+    }
+  }
+  return where;
 }

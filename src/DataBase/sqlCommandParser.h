@@ -8,9 +8,26 @@
 typedef enum{
   SELECT = 0,
   INSERT_INTO,
-  UPTADE,
+  UPDATE,
   DELETE
 }sqlType;
+
+/* TODO
+*/
+
+typedef struct {
+  char targetValue[maxStringSize];
+  char operatorField[maxStringSize];
+  char sourceValue[maxStringSize];
+}whereClause;
+/*! \enum operatorEnum
+    \brief Renseigne le type d'opérateur utilisé
+
+typedef enum {
+
+}operatorEnum;
+*/
+
 /*! \struct sqlRequest
     \brief Structure représentant une requete à la base de données.
 */
@@ -21,6 +38,7 @@ typedef struct{
   int nbValues;
   char listArgs[maxArraySize][maxStringSize];
   char listValues[maxArraySize][maxStringSize];
+  whereClause where;
 }sqlRequest;
 
 /*! \struct sqlCommand
@@ -103,3 +121,6 @@ sqlCommand identifyCommand (char stringArray[][maxStringSize], sqlCommand comman
     \return Renvoie la structure correspondant à la chaine en entrée. Si la chaine d'entrée est invalide, les champs de la structure seront initialisés à 0.
 */
 sqlRequest getSqlRequest (char *sqlQuerry);
+/*TODO
+*/
+whereClause getWhereClause (char stringArray[][maxStringSize],int arraySize);
