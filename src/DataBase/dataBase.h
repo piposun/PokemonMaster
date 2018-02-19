@@ -109,6 +109,13 @@ DATA_BASE close(DataBase *dataBase);
 */
 HeaderTable * getHeaderTable(FILE* tableFile);
 
+/*! \fn void destroyHeader(HeaderTable *header)
+    \brief TODO.
+
+    \param TODO
+*/
+void destroyHeader(HeaderTable *header);
+
 /*! \fn FILE* searchTable(DataBase *dataBase, char* nameTable)
     \brief TODO.
 
@@ -127,4 +134,24 @@ FILE* searchTable(DataBase *dataBase, char* nameTable);
 */
 char * getRecord(HeaderTable *header, FILE* file, int indexRecord);
 
+/*! \fn openTables(DataBase *dataBase)
+    \brief TODO.
+
+    \param dataBase Reference de la DataBase.
+*/
+void openTables(DataBase *dataBase);
+
+/*! \fn void closeTables(DataBase *dataBase)
+    \brief TODO.
+
+    \param dataBase Reference de la DataBase.
+*/
+void closeTables(DataBase *dataBase);
+
+/*! \fn restoreTables(DataBase *dataBase)
+    \brief TODO.
+
+    \param dataBase Reference de la DataBase.
+*/
+void restoreTables(DataBase *dataBase);
 #endif /* HEADER_DATA_BASE */
