@@ -12,7 +12,8 @@ typedef enum{
   DELETE
 }sqlType;
 
-/* TODO
+/*! \struct whereClause
+    \brief Structure représentant une clause WHERE.
 */
 
 typedef struct {
@@ -121,9 +122,16 @@ sqlCommand identifyCommand (char stringArray[][maxStringSize], sqlCommand comman
     \return Renvoie la structure correspondant à la chaine en entrée. Si la chaine d'entrée est invalide, les champs de la structure seront initialisés à 0.
 */
 sqlRequest getSqlRequest (char *sqlQuerry);
-/*TODO
+/*! \fn getWhereClause (char stringArray[][maxStringSize],int arraySize)
+    \brief Cette fonction va détecter la clause WHERE et la convertir en structure.
+    \param stringArray Tableau de chaines de caractère contenant le WHERE.
+    \param arraySize taille du tableau de chaines.
+    \return Renvoie la structure correspondant au WHERE. Si il n'y a pas de WHERE dans le tableau, les champs de la structure renvoyé sont vides.
 */
 whereClause getWhereClause (char stringArray[][maxStringSize],int arraySize);
-/*TODO
+/*! \fn removeChar (char string[], char removedChar)
+    \brief Cette fonction retire le caractère removeChar de la chaine de caractère string
+    \param string Chaine de caractère contenant le caractère à supprimer.
+    \param removedChar caractère qui doit être supprimé de la chaine.
 */
 void removeChar (char string[], char removedChar);

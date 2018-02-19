@@ -77,11 +77,28 @@ sqlRequest getSqlRequest (char *sqlQuerry){
         .where=getWhereClause(splitedRequest,rqSize)};
         mapStringArray(request.listValues,splitedValues,valuesSize);
     }else if (strcmp("UPDATE",command.commandName)==0){
-      request.sqlType=UPDATE;
+      splitString(splitedRequest[3],splitedArgs,&argsSize,"=");
+      request = (sqlRequest){
+        .sqlType = UPDATE,
+        .nameTable = splitedRequest[1],
+        .nbArgs = argsSize,
+        .nbValues = 0,
+        .listArgs={""},
+        .listValues={""},
+        .where=getWhereClause(splitedRequest,rqSize)};
+        mapStringArray(request.listArgs,splitedArgs,argsSize);
     }else if (strcmp("DELETE",command.commandName)==0){
-      request.sqlType=DELETE;
+      request = (sqlRequest){
+        .sqlType = DELETE,
+        .nameTable ="",
+        .nbArgs = 0,
+        .nbValues = 0,
+        .listArgs={""},
+        .listValues={""}
+      };
     }
     printQuerryStruct(&request);
+    return request;
   }
 }
 void printSqlCommand(sqlCommand *command){
