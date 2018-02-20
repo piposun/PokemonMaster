@@ -5,7 +5,7 @@
 #include"keyboard.h"
 #include"logger.h"
 
-int clear_buffer(void){
+int clearBuffer(void){
   int buffer=0, i=0;
   while( buffer=getchar() != '\n' && buffer != EOF) { /*  On parcours le buffer jusqu'à la fin pour le decharger dans la variable temporaire */
     i++; /* Si la variable de comptage "i" s'est incrementee, c'est qu'il restait des caracteres dans le buffer stdin*/
@@ -13,7 +13,7 @@ int clear_buffer(void){
   return i;
 }
 
-int keyboard_char(char *string, int nbCharMax) { /*  On passe à la fonction la variable qui va contenir la chaine de caractere et le nombre de caracteres maximum*/
+int keyboardChar(char *string, int nbCharMax) { /*  On passe à la fonction la variable qui va contenir la chaine de caractere et le nombre de caracteres maximum*/
 
       char *charReturn = NULL; /* Pointeur qui va pointer l'adresse du caractere "\n" */
       int max=0;
@@ -33,11 +33,11 @@ int keyboard_char(char *string, int nbCharMax) { /*  On passe à la fonction la 
               max=0; /* Necessaire en cas de boucle */
             }
             else{ /* Si on n'a pas trouver le /n, alors le buffer n'est pas vide */
-              max=clear_buffer();/*  Donc on vide le buffer  */
+              max=clearBuffer();/*  Donc on vide le buffer  */
             }
         }
         else{  /* Si erreur de la commande de saisie */
-            max=clear_buffer(); /* Par sécurite, on vide le buffer */
+            max=clearBuffer(); /* Par sécurite, on vide le buffer */
             return 1; /* Erreur de saisie, retourne 1 */
         }
 
@@ -54,16 +54,16 @@ int keyboard_char(char *string, int nbCharMax) { /*  On passe à la fonction la 
       return 0; /* Saisie sans erreur on retourne 0 */
 }
 
-int keyboard_int(int *number, int min, int max) { /*  On passe à la fonction la variable qui va contenir le chiffre et la taille min et max du chiffre*/
+int keyboardInt(int *number, int min, int max) { /*  On passe à la fonction la variable qui va contenir le chiffre et la taille min et max du chiffre*/
 
-    int nbCharMax=0; /* =0 est l'identifiant pour une demande de nombre a keyboard_char */
+    int nbCharMax=0; /* =0 est l'identifiant pour une demande de nombre a keyboardChar */
     int numberTemp=0;
     char numberText[nbDigitMax]; // équivalent à 99999
 
     do {
       printf("\nVeuillez saisir un nombre entier compris entre %d et %d : ",min,max );
 
-      if (keyboard_char(numberText,nbCharMax)==0){ /*  On appel la fonction saisie clavier que l'on test egalement  */
+      if (keyboardChar(numberText,nbCharMax)==0){ /*  On appel la fonction saisie clavier que l'on test egalement  */
           sscanf(numberText,"%d", &numberTemp); /*converti la chaine de caractere en int */
       }
       else{

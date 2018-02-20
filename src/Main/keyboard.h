@@ -14,31 +14,31 @@
 #define nbDigitMax 5 // équivalent à 99999
 
 
-/*! \fn int clear_buffer(void)
+/*! \fn int clearBuffer(void)
     \brief Vide le buffer du clavier.
 
     \param level Niveau du message.
     \param format Format du message.
     \param ... Liste d'arguments variable.
 */
-int clear_buffer(void); /* fonction de vidage buffer avant saisie clavier */
+int clearBuffer(void); /* fonction de vidage buffer avant saisie clavier */
 
-/*! \fn int keyboard_char(char *string, int nbCharMax)
+/*! \fn int keyboardChar(char *string, int nbCharMax)
     \brief Securise et borne la saisie clavier des caracteres.
 
     \param level Niveau du message.
     \param format Format du message.
     \param ... Liste d'arguments variable.
 */
-int keyboard_char(char *string, int nbCharMax); /* fonction saisie de caracteres sécurisée */
+int keyboardChar(char *string, int nbCharMax); /* fonction saisie de caracteres sécurisée */
 
-/*! \fn int keyboard_int(int *number, int min, int max)
+/*! \fn int keyboardInt(int *number, int min, int max)
     \brief Securise et borne la saisie clavier des entiers.
 
     \param level Niveau du message.
     \param format Format du message.
     \param ... Liste d'arguments variable.
 */
-int keyboard_int(int *number, int min, int max);/* fonction saisie d'entiers sécurisée */
+int keyboardInt(int *number, int min, int max);/* fonction saisie d'entiers sécurisée */
 
 #endif /* HEADER_KEYBOARD */
