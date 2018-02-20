@@ -151,6 +151,12 @@ SQL_REQUEST getSqlRequest (char *sqlQuerry){
 
       feedCreateTableStruct(splitedRequest,rqSize,&request);
     }
+
+    for (size_t i = 0; i < request.nbValues; i++) {
+      removeChar(request.listValues[i],'"');
+      replaceChar(request.listValues[i],'&', ' ');
+    }
+
     printQuerryStruct(&request);
     return request;
   }
@@ -192,6 +198,10 @@ int isMandatoryClause(char* string,SQL_COMMAND *command){
 }
 
 int isOptionnalClause(char* string,SQL_COMMAND *command){
+
+  if (command->nbOptionnalClauses == 0) {
+    return 0;
+  }
 
   for (size_t i = 0; i < command->nbOptionnalClauses; i++) {
     if (strcmp(string,command->optionnalClauseNames[i])==0) {
@@ -244,9 +254,12 @@ void splitString(char* sqlQuerry,char stringArray[][maxStringSize],int *arraySiz
       strcpy(stringArray[0],"INSERT INTO");//gestion de l'exception de INSERT INTO
       counter = 1;
 
-    }else if (strcmp(token,"DELETE") == 0 || strcmp(token,"FROM") == 0){
-      strcpy(stringArray[0],"DELETE FROM");//gestion de l'exception de DELETE FROM
-      counter = 1;
+    }else if (strcmp(token,"DELETE") == 0){
+      token = strsep(&cpySqlQuerry, splitCharacter);
+      if (strcmp(token,"FROM") == 0) {
+        strcpy(stringArray[0],"DELETE FROM");//gestion de l'exception de DELETE FROM
+        counter = 1;
+      }
 
     }else if (strcmp(token,"CREATE") == 0 || strcmp(token,"TABLE") == 0){
       strcpy(stringArray[0],"CREATE TABLE");//gestion de l'exception de CREATE TABLE
@@ -323,6 +336,7 @@ WHERE_CLAUSE getWhereClause (char stringArray[][maxStringSize],int arraySize){
       strcpy(where.targetValue,splitedWhere[0]);
       strcpy(where.operatorField,"=");
       removeChar(splitedWhere[1],'\'');
+      removeChar(splitedWhere[1],'"');
       strcpy(where.sourceValue,splitedWhere[1]);
 
     }
@@ -344,6 +358,14 @@ void feedCreateTableStruct(char stringArray[][maxStringSize],int arraySize,SQL_R
   }
   request->nbArgs = j;
   request->nbValues = j;
+}
+
+void replaceChar (char string[], char searchChar, char replaceChar){
+  for (size_t i = 0; string[i] != 0; ++i) {//On itère sur tous les caractères de la chaine.
+    if (string[i] == searchChar) {// Tant qu'on trouve le caractère à modifier.
+      string[i] = replaceChar;//Le caractère à modifier est remplacé par le caractère replaceChar.
+    }
+  }
 }
 
 void removeChar (char string[], char removedChar){

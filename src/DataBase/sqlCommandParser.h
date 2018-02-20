@@ -1,4 +1,4 @@
-#define maxArraySize (10)
+#define maxArraySize (15)
 #define maxStringSize (30)
 #define nbMaxClauses (8)
 #define nbMaxCommand (5)
@@ -141,6 +141,14 @@ WHERE_CLAUSE getWhereClause (char stringArray[][maxStringSize],int arraySize);
     \param removedChar caractère qui doit être supprimé de la chaine.
 */
 void removeChar (char string[], char removedChar);
+
+/*! \fn replaceChar (char string[], char searchChar, char replaceChar)
+    \brief Cette fonction remplace le caractère searchChar de la chaine de caractère string par replaceChar
+    \param string Chaine de caractère contenant le caractère à modifier.
+    \param searchChar caractère qui doit être modifié de la chaine.
+    \param replaceChar caractère de remplacement.
+*/
+void replaceChar (char string[], char searchChar, char replaceChar);
 
 /*! \fn feedCreateTableStruct(char stringArray[][maxStringSize],int arraySize,SQL_REQUEST *request)
     \brief Cette fonction renseigne les champs de la structure passée en paramètre.
