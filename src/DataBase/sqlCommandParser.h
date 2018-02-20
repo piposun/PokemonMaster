@@ -10,7 +10,8 @@ typedef enum{
   INSERT_INTO, /**< Indique que le type de commande est INSERT INTO */
   UPDATE, /**< Indique que le type de commande est UPDATE */
   DELETE, /**< Indique que le type de commande est DELETE */
-  CREATE_TABLE  /**< Indique que le type de commande est CREATE_TABLE */
+  CREATE_TABLE,  /**< Indique que le type de commande est CREATE_TABLE */
+  UNDIFIENED /**< Indique que le type de commande n'a pas pu être définie */
 }SQL_TYPE;
 
 /*! \struct WHERE_CLAUSE
