@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "dataBase.h"
 #include "query.h"
@@ -100,8 +101,12 @@ DATA_BASE commandInsert(HeaderTable *header, FILE *file, char listField[][DATA_F
     header->nbRecord++;
     header->lengthRecord += sizeRecord;
 
+    updateTimeHeader(header);
+
     fseek(file, 0, SEEK_SET);
     nbElement = fwrite(header, sizeof(HeaderTable), 1, file);
+
+
 
     if (nbElement != 1) {
       return DATA_BASE_FAILURE;
@@ -167,6 +172,48 @@ DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record
   return DATA_BASE_FAILURE;
 }
 
+DATA_FIELD convertCharTypeToType(char *cType) {
+  DATA_FIELD type = DATA_FIELD_UNKNOWN;
+
+  if (strcmp(cType, "INT") == 0) {
+    type = DATA_FIELD_INT;
+  }
+  else if(strcmp(cType, "PRIMARY_KEY") == 0) {
+    type = DATA_FIELD_PK;
+  }
+  else if (strstr(cType, "VARCHAR") != NULL) {
+    type = DATA_FIELD_CHAR;
+  }
+
+  return type;
+}
+
+int convertCharTypeToSize(char *type) {
+  int size = 0;
+
+  if (strcmp(type, "INT") == 0 || strcmp(type, "PRIMARY_KEY") == 0) {
+    size = sizeof(int);
+  }
+  else if (strstr(type, "VARCHAR") != NULL) {
+    sscanf(type, "VARCHAR[%d]", &size);
+    size = size * sizeof(char);
+  }
+
+  return size;
+}
+
+void updateTimeHeader(HeaderTable *headerTable) {
+  time_t timestamp;
+  struct tm * t;
+
+  timestamp = time(NULL);
+  t = localtime(&timestamp);
+
+  headerTable->lastUpdate.day   = t->tm_mday;
+  headerTable->lastUpdate.month = t->tm_mon;
+  headerTable->lastUpdate.year  = 1900 + t->tm_year;
+}
+
 DATA_BASE commandCreateTable() {
   FILE *file;
 
@@ -174,39 +221,43 @@ DATA_BASE commandCreateTable() {
 
   if (file != NULL) {
     HeaderTable headerTable;
-    DataField dataField;
-    int champ1 = 30;
-    char champ2[DATA_FIELD_MAX_CHARACTER] = "Pikachu";
-    char actif = CHARACTER_RECORD_VALID;
+    DataField *dataField = NULL;
 
-    int sizeRecord = sizeof(char) + sizeof(int) + sizeof(char) * DATA_FIELD_MAX_CHARACTER;
+    int nbField = 2;
+    int sizeRecord = 0;
+
+    dataField = (DataField *)malloc(sizeof(DataField)*nbField);
+
+    if (dataField == NULL) {
+      fclose(file);
+      return DATA_BASE_FAILURE;
+    }
+
+    for(int i = 0; i < nbField; i++) {
+      int size = convertCharTypeToSize("INT");
+
+      dataField[i].offset = sizeRecord;
+      dataField[i].type = convertCharTypeToType("INT");
+      strcpy(dataField[i].name, "id");
+      dataField[i].size = size;
+
+      sizeRecord += size;
+    }
+
 
     headerTable.valid = 1;
-    headerTable.lastUpdate.day   = 28;
-    headerTable.lastUpdate.month = 12;
-    headerTable.lastUpdate.year  = 17;
-    headerTable.nbRecord = 1;
-    headerTable.nbField  = 2;
+    headerTable.nbRecord = 0;
+    headerTable.nbField  = nbField;
     headerTable.lengthHeader = sizeof(HeaderTable);
     headerTable.lengthRecord = headerTable.nbRecord * sizeRecord;
     headerTable.lengthField  = headerTable.nbField * sizeof(DataField);
+    updateTimeHeader(&headerTable);
+
+    fseek(file, 0 , SEEK_SET);
     fwrite(&headerTable, sizeof(HeaderTable), 1, file);
+    fwrite(dataField, sizeof(DataField), nbField, file);
 
-    dataField.offset = 0;
-    dataField.type = DATA_FIELD_INT;
-    strcpy(dataField.name, "id");
-    dataField.size = sizeof(int);
-    fwrite(&dataField, sizeof(DataField), 1, file);
-
-    dataField.offset = sizeof(int);
-    dataField.type = DATA_FIELD_CHAR;
-    strcpy(dataField.name, "name");
-    dataField.size = sizeof(char) * DATA_FIELD_MAX_CHARACTER;
-    fwrite(&dataField, sizeof(DataField), 1, file);
-
-    fwrite(&actif, sizeof(char), 1, file);
-    fwrite(&champ1, sizeof(int), 1, file);
-    fwrite(champ2, sizeof(char) * DATA_FIELD_MAX_CHARACTER, 1, file);
+    free(dataField);
   }
 
   fclose(file);
@@ -230,6 +281,7 @@ DATA_BASE commandDelete(HeaderTable *header, FILE *file, Condition *condition) {
       nbElement = fwrite(record, sizeof(char) * sizeRecord, 1, file);
 
       if (nbElement != 1) {
+        free(record);
         return DATA_BASE_FAILURE;
       }
     }
@@ -237,6 +289,15 @@ DATA_BASE commandDelete(HeaderTable *header, FILE *file, Condition *condition) {
     if (record != NULL) {
       free(record);
     }
+  }
+
+  updateTimeHeader(header);
+
+  fseek(file, 0 , SEEK_SET);
+  nbElement = fwrite(header, sizeof(HeaderTable), 1, file);
+
+  if (nbElement != 1) {
+    return DATA_BASE_FAILURE;
   }
 
   return DATA_BASE_SUCCESS;
@@ -275,6 +336,7 @@ DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, c
             nbElement = fwrite(record, sizeof(char) * sizeRecord, 1, file);
 
             if (nbElement != 1) {
+              free(record);
               return DATA_BASE_FAILURE;
             }
 
@@ -291,6 +353,15 @@ DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, c
     if (record != NULL) {
       free(record);
     }
+  }
+
+  updateTimeHeader(header);
+
+  fseek(file, 0 , SEEK_SET);
+  nbElement = fwrite(header, sizeof(HeaderTable), 1, file);
+
+  if (nbElement != 1) {
+    return DATA_BASE_FAILURE;
   }
 
   return DATA_BASE_SUCCESS;

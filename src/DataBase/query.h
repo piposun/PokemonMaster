@@ -155,4 +155,31 @@ DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, c
 */
 DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record);
 
+/*! \fn int convertCharTypeToSize(char *type)
+    \brief TODO.
+
+    \param TODO.
+    \param TODO.
+    \return TODO.
+*/
+int convertCharTypeToSize(char *type);
+
+/*! \fn DATA_FIELD convertCharTypeToType(char *cType)
+    \brief TODO.
+
+    \param TODO.
+    \param TODO.
+    \return TODO.
+*/
+DATA_FIELD convertCharTypeToType(char *cType);
+
+/*! \fn void updateTimeHeader(HeaderTable *headerTable)
+    \brief TODO.
+
+    \param TODO.
+    \param TODO.
+    \return TODO.
+*/
+void updateTimeHeader(HeaderTable *headerTable);
+
 #endif /* HEADER_QUERY */
