@@ -1,48 +1,49 @@
 #define maxArraySize (10)
 #define maxStringSize (30)
 #define nbMaxClauses (8)
-#define nbMaxCommand (4)
+#define nbMaxCommand (5)
 /*! \enum SQL_TYPE
     \ brief Renseigne le type de commande.
 */
 typedef enum{
-  SELECT = 0,
-  INSERT_INTO,
-  UPDATE,
-  DELETE
+  SELECT = 0, /**< Indique que le type de commande est SELECT */
+  INSERT_INTO, /**< Indique que le type de commande est INSERT INTO */
+  UPDATE, /**< Indique que le type de commande est UPDATE */
+  DELETE, /**< Indique que le type de commande est DELETE */
+  CREATE_TABLE  /**< Indique que le type de commande est CREATE_TABLE */
 }SQL_TYPE;
 
 /*! \struct WHERE_CLAUSE
     \brief Structure représentant une clause WHERE.
 */
 typedef struct {
-  char targetValue[maxStringSize];
-  char operatorField[maxStringSize];
-  char sourceValue[maxStringSize];
+  char targetValue[maxStringSize]; /**< Est la valeur cible de l'opération */
+  char operatorField[maxStringSize]; /**< Est l'opérateur de l'opération */
+  char sourceValue[maxStringSize]; /**< Est la valeur source de l'opération */
 }WHERE_CLAUSE;
 
 /*! \struct SQL_REQUEST
     \brief Structure représentant une requete à la base de données.
 */
 typedef struct{
-  SQL_TYPE sqlType;
-  char* nameTable;
-  int nbArgs;
-  int nbValues;
-  char listArgs[maxArraySize][maxStringSize];
-  char listValues[maxArraySize][maxStringSize];
-  WHERE_CLAUSE where;
+  SQL_TYPE sqlType; /**< Enumération représentant le type de requète. */
+  char* nameTable; /**< Nom de la table affectée par la requète. */
+  int nbArgs; /**< Nombre d'arguments de la requète. */
+  int nbValues; /**< Nombre de valeurs de la requète. */
+  char listArgs[maxArraySize][maxStringSize]; /**< Tableau contenant les arguments de la requète */
+  char listValues[maxArraySize][maxStringSize]; /**< Tableau contenant les valeurs de la requète */
+  WHERE_CLAUSE where; /**< Structure représentant les champs de la clase WHERE. */
 }SQL_REQUEST;
 
 /*! \struct SQL_COMMAND
     \brief Structure représentant une commande SQL.
 */
 typedef struct{
-  char* commandName;
-  int nbMandatoryClauses;
-  char* mandatoryClauseNames[nbMaxClauses];
-  int nbOptionnalClauses;
-  char* optionnalClauseNames[nbMaxClauses];
+  char* commandName; /**< Indique que le type de commande est SELECT */
+  int nbMandatoryClauses; /**< Indique que le type de commande est SELECT */
+  char* mandatoryClauseNames[nbMaxClauses]; /**< Indique que le type de commande est SELECT */
+  int nbOptionnalClauses; /**< Indique que le type de commande est SELECT */
+  char* optionnalClauseNames[nbMaxClauses]; /**< Indique que le type de commande est SELECT */
 }SQL_COMMAND;
 
 /*! \fn mapStringArray (char targetArray[][maxStringSize],char sourceArray[][maxStringSize],int size)
@@ -139,3 +140,11 @@ WHERE_CLAUSE getWhereClause (char stringArray[][maxStringSize],int arraySize);
     \param removedChar caractère qui doit être supprimé de la chaine.
 */
 void removeChar (char string[], char removedChar);
+
+/*! \fn feedCreateTableStruct(char stringArray[][maxStringSize],int arraySize,SQL_REQUEST *request)
+    \brief Cette fonction renseigne les champs de la structure passée en paramètre.
+    \param stringArray Tableau de chaines de caractères contenant les données de la requète.
+    \param arraySize Taille du tableau de caractères.
+    \param request Pointeur de la structure de SQL_REQUEST qui sera remplie.
+*/
+void feedCreateTableStruct(char stringArray[][maxStringSize],int arraySize,SQL_REQUEST *request);
