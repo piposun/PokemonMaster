@@ -1,22 +1,24 @@
 #ifndef HEADER_MENU
 #define HEADER_MENU
 
-/*! \fn void userRequestsMenu(void)
-    \brief Menu d'affichage des cas d'utilisation de la base de donnees.
+/*! \file menu.h
+    \brief Menu d'affichage et de selection des cas d'utilisation de la base de donnees.
+    \version 0.1
 
-    \param TODO.
-    \param TODO.
-    \return TODO.
+    Permet d'afficher le menu à l'utilisateur et de selectionner les donnees qu'il souhaite afficher.
 */
-void userRequestsMenu(void); /* prototype fonction: Affichage menu */
 
-/*! \fn void userRequestsSelection(int *requestChoice)
-    \brief Switchcase de selection des cas d'utilisations de la base de donnees.
 
-    \param TODO.
-    \param TODO.
-    \return TODO.
+/*! \fn void userRequestsMenu(void);
+    \brief Fonction qui affiche le menu des cas d'utilisation de la base de donnees.
 */
-void userRequestsSelection(int *requestChoice);/* switch de selection des usecases */
+void userRequestsMenu(void);
+
+/*! \fn void userRequestsSelection(int *requestChoice);
+    \brief Fonction qui selectionne le bon cas d'utilisation en fonction de la demande utilisateur.
+
+    \param requestChoice variable de selection saisie par l'utilisateur.
+*/
+void userRequestsSelection(int *requestChoice);
 
 #endif /* HEADER_MENU */

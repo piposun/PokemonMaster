@@ -11,34 +11,33 @@
 /*! \def nbDigitMax
     \brief Definition du nombre de digit d'un entier saisi par l'operateur
 */
-#define nbDigitMax 5 // équivalent à 99999
+#define nbDigitMax 5
 
 
-/*! \fn int clearBuffer(void)
-    \brief Vide le buffer du clavier.
+/*! \fn int clearBuffer(void);
+    \brief Cette fonction vide le buffer du clavier.
 
-    \param level Niveau du message.
-    \param format Format du message.
-    \param ... Liste d'arguments variable.
+    \return Retourne le nombres de caractères qu'il restait dans le buffer stdin.
 */
-int clearBuffer(void); /* fonction de vidage buffer avant saisie clavier */
+int clearBuffer(void);
 
-/*! \fn int keyboardChar(char *string, int nbCharMax)
-    \brief Securise et borne la saisie clavier des caracteres.
+/*! \fn int keyboardChar(char *string, int nbCharMax);
+    \brief Cette fonction securise et borne la saisie clavier des caracteres.
 
-    \param level Niveau du message.
-    \param format Format du message.
-    \param ... Liste d'arguments variable.
+    \param string pointeur sur variable contenant la saisie clavier.
+    \param nbCharMax taille de la chaine de caracteres.
+    \return La fonction renvoie un entier de valeur 0 si la saisie s'est deroulee sans erreur et 1 si erreur de saisie
 */
-int keyboardChar(char *string, int nbCharMax); /* fonction saisie de caracteres sécurisée */
+int keyboardChar(char *string, int nbCharMax);
 
-/*! \fn int keyboardInt(int *number, int min, int max)
-    \brief Securise et borne la saisie clavier des entiers.
+/*! \fn int keyboardInt(int *number, int min, int max);
+    \brief Cette fonction securise et borne la saisie clavier des entiers.
 
-    \param level Niveau du message.
-    \param format Format du message.
-    \param ... Liste d'arguments variable.
+    \param number pointeur sur la chaine de caractere saisie au clavier (nombres).
+    \param min valeur minimum du chiffre a saisir.
+    \param max valeur maximum du chiffre a saisir.
+    \return La fonction renvoie un entier de valeur 0 si la saisie s'est deroulee sans erreur et 1 si erreur de saisie
 */
-int keyboardInt(int *number, int min, int max);/* fonction saisie d'entiers sécurisée */
+int keyboardInt(int *number, int min, int max);
 
 #endif /* HEADER_KEYBOARD */
