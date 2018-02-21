@@ -4,6 +4,7 @@
 #include "query.h"
 #include "logger.h"
 
+
 int main(int argc, char const *argv[]) {
   DataBase *dataBase = NULL;
   Query *query = NULL;
