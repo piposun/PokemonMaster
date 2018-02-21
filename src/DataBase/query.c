@@ -2,9 +2,9 @@
 #include <string.h>
 #include <time.h>
 
-#include "dataBase.h"
 #include "query.h"
 #include "logger.h"
+#include "openFile.h"
 
 DATA_FIELD getTypeQueryById(Query * query, int index) {
   if (index < 0 || index >= query->descriptor.nbField) {
@@ -57,35 +57,80 @@ DATA_BASE closeQuery(Query *query) {
   return DATA_BASE_SUCCESS;
 }
 
-DATA_BASE commandInsert(HeaderTable *header, FILE *file, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField, char listValue[][DATA_FIELD_MAX_CHARACTER]) {
+Query * executeCommand(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest) {
+  DATA_BASE result;
+  Query *query = NULL;
+
+  switch (sqlRequest->sqlType) {
+    case SELECT:
+    {
+      query = commandSelect(header, file, sqlRequest);
+      if (query == NULL) {
+        result = DATA_BASE_FAILURE;
+      }
+    }
+    break;
+
+    case INSERT_INTO:
+    {
+      result = commandInsert(header, file, sqlRequest);
+    }
+    break;
+
+    case UPDATE:
+    {
+      result = commandUpdate(header, file, sqlRequest);
+    }
+    break;
+
+    case DELETE:
+    {
+      result = commandDelete(header, file, sqlRequest);
+    }
+    break;
+
+    case CREATE_TABLE: //Deja traité
+    default:
+    break;
+  }
+  return query;
+}
+
+DATA_BASE commandInsert(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest) {
   char *buff = NULL;
-  int sizeRecord = header->lengthRecord/header->nbRecord;
+  int sizeRecord = 0;
   int nbElement = 0;
+
+  for(int i = 0; i < header->nbField; i++) {
+    sizeRecord += header->descriptor[i].size;
+  }
 
   buff = (char*)malloc(sizeof(char) * sizeRecord);
   memset(buff, 0 , sizeof(char) * sizeRecord);
   buff[0] = CHARACTER_RECORD_VALID;
 
   if (buff != NULL) {
-    for(int i = 0; i < nbField; i++) {
-      for(int j = 0; j < header->nbField; j++) {
-        if(strcmp(listField[i], header->descriptor[j].name) == 0) {
-          switch (header->descriptor[j].type) {
-            case DATA_FIELD_INT:
-            {
-              int value = atoi(listValue[i]);
-              memcpy(buff+1+header->descriptor[j].offset, &value, header->descriptor[j].size);
-            }
-            break;
-            case DATA_FIELD_CHAR:
-            {
-              memcpy(buff+1+header->descriptor[j].offset, listValue[i], header->descriptor[j].size);
-            }
-            break;
-            default:
-            break;
-          }
+    for(int i = 0; i < header->nbField; i++) {
+      switch (header->descriptor[i].type) {
+        case DATA_FIELD_PK:
+        {
+          int value = header->nbRecord + 1;
+          memcpy(buff+1+header->descriptor[i].offset, &value, header->descriptor[i].size);
         }
+        break;
+        case DATA_FIELD_INT:
+        {
+          int value = atoi(sqlRequest->listValues[i-1]);
+          memcpy(buff+1+header->descriptor[i].offset, &value, header->descriptor[i].size);
+        }
+        break;
+        case DATA_FIELD_CHAR:
+        {
+          memcpy(buff+1+header->descriptor[i].offset, sqlRequest->listValues[i-1], strlen(sqlRequest->listValues[i-1]));
+        }
+        break;
+        default:
+        break;
       }
     }
 
@@ -116,20 +161,37 @@ DATA_BASE commandInsert(HeaderTable *header, FILE *file, char listField[][DATA_F
   return DATA_BASE_SUCCESS;
 }
 
-DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record) {
-  if (condition == NULL) {
-    return DATA_BASE_SUCCESS;
+CONDITION convTypeWhere(char *cOperator) {
+  CONDITION operator = CONDITION_UNK;
+
+  if(strcmp(cOperator, "=") == 0) {
+    operator = CONDITION_EQUAL;
+  }
+  else if(strcmp(cOperator, ">") == 0) {
+    operator = CONDITION_GREAT;
+  }
+  else if(strcmp(cOperator, "<") == 0) {
+    operator = CONDITION_LOW;
   }
 
+  return operator;
+}
+
+DATA_BASE checkCondition(HeaderTable *header, WHERE_CLAUSE *where, char *record) {
+  if (where == NULL || convTypeWhere(where->operatorField) == CONDITION_UNK) {
+    return DATA_BASE_SUCCESS;
+  }
+  
   for(int i = 0; i < header->nbField; i++) {
-    if(strcmp(condition->field, header->descriptor[i].name) == 0) {
-      switch (condition->type) {
+    if(strcmp(where->targetValue, header->descriptor[i].name) == 0) {
+      switch (convTypeWhere(where->operatorField)) {
         case CONDITION_EQUAL:
         {
           switch (header->descriptor[i].type) {
+            case DATA_FIELD_PK:
             case DATA_FIELD_INT:
             {
-              int value = atoi(condition->value);
+              int value = atoi(where->sourceValue);
               int data;
               char *pData = record + 1 + header->descriptor[i].offset;
 
@@ -147,7 +209,7 @@ DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record
             case DATA_FIELD_CHAR:
             {
               char *data = record + 1 + header->descriptor[i].offset;
-              if(strcmp(condition->value, data) == 0) {
+              if(strcmp(where->sourceValue, data) == 0) {
                 return DATA_BASE_SUCCESS;
               }
               else
@@ -214,16 +276,19 @@ void updateTimeHeader(HeaderTable *headerTable) {
   headerTable->lastUpdate.year  = 1900 + t->tm_year;
 }
 
-DATA_BASE commandCreateTable() {
-  FILE *file;
+DATA_BASE commandCreateTable(SQL_REQUEST *sqlRequest) {
+  FILE *file = NULL;
+  char path[PATH_MAX_CHARACTER];
 
-  file = fopen("../../ressources/bases/testBase.dbase", "w+");
+  sprintf(path, "%s%s.dbase", PATH_BASE, sqlRequest->nameTable);
+  DEBUG("PATH %s", path);
+  if (openFile(&file, path, "w+") == 1) {
+    DEBUG("Ouverture du fichier %s", path);
 
-  if (file != NULL) {
     HeaderTable headerTable;
     DataField *dataField = NULL;
 
-    int nbField = 2;
+    int nbField = sqlRequest->nbArgs;
     int sizeRecord = 0;
 
     dataField = (DataField *)malloc(sizeof(DataField)*nbField);
@@ -234,11 +299,11 @@ DATA_BASE commandCreateTable() {
     }
 
     for(int i = 0; i < nbField; i++) {
-      int size = convertCharTypeToSize("INT");
+      int size = convertCharTypeToSize(sqlRequest->listValues[i]);
 
       dataField[i].offset = sizeRecord;
-      dataField[i].type = convertCharTypeToType("INT");
-      strcpy(dataField[i].name, "id");
+      dataField[i].type = convertCharTypeToType(sqlRequest->listValues[i]);
+      strcpy(dataField[i].name, sqlRequest->listArgs[i]);
       dataField[i].size = size;
 
       sizeRecord += size;
@@ -265,7 +330,7 @@ DATA_BASE commandCreateTable() {
   return DATA_BASE_SUCCESS;
 }
 
-DATA_BASE commandDelete(HeaderTable *header, FILE *file, Condition *condition) {
+DATA_BASE commandDelete(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest) {
   int sizeRecord = header->lengthRecord/header->nbRecord;
   int nbElement = 0;
 
@@ -274,7 +339,7 @@ DATA_BASE commandDelete(HeaderTable *header, FILE *file, Condition *condition) {
 
     record = getRecord(header, file, i);
 
-    if (checkCondition(header, condition, record) == DATA_BASE_SUCCESS) {
+    if (checkCondition(header, &sqlRequest->where, record) == DATA_BASE_SUCCESS) {
       record[0] = CHARACTER_RECORD_INVALID;
 
       fseek(file, -(sizeof(char) * sizeRecord) , SEEK_CUR);
@@ -303,7 +368,7 @@ DATA_BASE commandDelete(HeaderTable *header, FILE *file, Condition *condition) {
   return DATA_BASE_SUCCESS;
 }
 
-DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField, char listValue[][DATA_FIELD_MAX_CHARACTER]) {
+DATA_BASE commandUpdate(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest) {
   int sizeRecord = header->lengthRecord/header->nbRecord;
   int nbElement = 0;
 
@@ -312,20 +377,20 @@ DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, c
 
     record = getRecord(header, file, i);
 
-    if (checkCondition(header, condition, record) == DATA_BASE_SUCCESS) {
-      for(int k = 0; k < nbField; k++) {
+    if (checkCondition(header, &sqlRequest->where, record) == DATA_BASE_SUCCESS) {
+      for(int k = 0; k < sqlRequest->nbArgs; k++) {
         for(int l = 0; l < header->nbField; l++) {
-          if(strcmp(listField[k], header->descriptor[l].name) == 0) {
+          if(strcmp(sqlRequest->listArgs[k], header->descriptor[l].name) == 0) {
             switch (header->descriptor[l].type) {
               case DATA_FIELD_INT:
               {
-                int value = atoi(listValue[k]);
+                int value = atoi(sqlRequest->listValues[k]);
                 memcpy(record+1+header->descriptor[l].offset, &value, header->descriptor[l].size);
               }
               break;
               case DATA_FIELD_CHAR:
               {
-                memcpy(record+1+header->descriptor[l].offset, listValue[k], header->descriptor[l].size);
+                memcpy(record+1+header->descriptor[l].offset, sqlRequest->listValues[k], header->descriptor[l].size);
               }
               break;
               default:
@@ -367,12 +432,12 @@ DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, c
   return DATA_BASE_SUCCESS;
 }
 
-Query * commandSelect(HeaderTable *header, FILE *file, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField) {
+Query * commandSelect(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest) {
   Query *query = NULL;
   query = (Query*)malloc(sizeof(Query));
 
   if (query != NULL) {
-    if (createDescriptorResult(header, query, listField, nbField) == DATA_BASE_SUCCESS) {
+    if (createDescriptorResult(header, query, sqlRequest->listArgs, sqlRequest->nbArgs) == DATA_BASE_SUCCESS) {
       query->nbRecord = 0;
       query->data = NULL;
 
@@ -380,16 +445,11 @@ Query * commandSelect(HeaderTable *header, FILE *file, char listField[][DATA_FIE
         char *buffRecord = NULL;
         char *cursorQuery = NULL;
         char *cursorRecord = NULL;
-        //TODO
-        Condition condition;
-        strcpy(condition.field, "name");
-        strcpy(condition.value, "Pikachu");
-        condition.type = CONDITION_EQUAL;
 
         buffRecord = getRecord(header, file, i);
 
         if (recordIsValid(buffRecord) == DATA_BASE_SUCCESS) {
-          if (checkCondition(header, &condition, buffRecord) == DATA_BASE_SUCCESS) {
+          if (checkCondition(header, &sqlRequest->where, buffRecord) == DATA_BASE_SUCCESS) {
 
             query->nbRecord++;
             if (query->data == NULL) {
@@ -436,57 +496,44 @@ Query * commandSelect(HeaderTable *header, FILE *file, char listField[][DATA_FIE
 Query * excuteQuery(DataBase *dataBase, char *sql) {
   Query *query = NULL;
   FILE  *file;
-  Condition condition;
+
+  SQL_REQUEST sqlRequest;
 
   if (dataBase == NULL) {
     ERROR("La dataBase est NULL !");
     return NULL;
   }
 
-  file = searchTable(dataBase, "testBase");
-  if (file != NULL) {
-    HeaderTable *header;
+  sqlRequest = getSqlRequest(sql);
 
-    header = getHeaderTable(file);
-    if (header == NULL) {
-      return NULL;
-    }
-
-
-    strcpy(condition.field, "name");
-    strcpy(condition.value, "Pikachu");
-    condition.type = CONDITION_EQUAL;
-
-    char listUpdateField[1][DATA_FIELD_MAX_CHARACTER] = {"id"};
-    char listUpdateValue[1][DATA_FIELD_MAX_CHARACTER] = {"1"};
-    int nbUpdateField = 1;
-
-    commandUpdate(header, file, &condition, listUpdateField, nbUpdateField, listUpdateValue);
-
-    // TODO code Adrien
-    /*char listField[2][DATA_FIELD_MAX_CHARACTER] = {"id", "name"};
-    int nbField = 2;
-    char listValue[2][DATA_FIELD_MAX_CHARACTER] = {"100", "TEST"};*/
-
-    char listField[1][DATA_FIELD_MAX_CHARACTER] = {"id"};
-    int nbField = 1;
-
-    //commandInsert(header, file, listField, nbField, listValue);
-    //fflush(file);
-    query = commandSelect(header, file, listField, nbField);
-
-    destroyHeader(header);
+  if (sqlRequest.sqlType == CREATE_TABLE)
+  {
+    commandCreateTable(&sqlRequest);
+    openTable(dataBase, sqlRequest.nameTable);
   }
   else {
-    return NULL;
+    file = searchTable(dataBase, sqlRequest.nameTable);
+    if (file != NULL) {
+      HeaderTable *header;
+
+      header = getHeaderTable(file);
+      if (header == NULL) {
+        return NULL;
+      }
+
+      query = executeCommand(header, file, &sqlRequest);
+
+      destroyHeader(header);
+    }
+    else {
+      return NULL;
+    }
   }
-
-
 
   return query;
 }
 
-DATA_BASE createDescriptorResult(HeaderTable *header, Query *query, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField) {
+DATA_BASE createDescriptorResult(HeaderTable *header, Query *query, char listField[][maxStringSize], int nbField) {
 
   if (nbField == 1 && strcmp(listField[0], "*")==0) {
     query->descriptor.nbField = header->nbField;

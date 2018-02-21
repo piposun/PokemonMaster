@@ -141,7 +141,7 @@ SQL_REQUEST getSqlRequest (char *sqlQuerry){
       };
 
       //TODO : Trouver un moyen d'éviter les duplicate
-      splitString(sqlQuerry,splitedRequest,&rqSize," ,\n\t");
+      splitString(sqlQuerry,splitedRequest,&rqSize," ,\t");
         //Retrait des caractères génants
         for (size_t i = 0; i < rqSize; i++) {
           removeChar(splitedRequest[i],'(');
@@ -153,6 +153,7 @@ SQL_REQUEST getSqlRequest (char *sqlQuerry){
     }
 
     for (size_t i = 0; i < request.nbValues; i++) {
+      removeChar(request.listValues[i],'\n');
       removeChar(request.listValues[i],'"');
       replaceChar(request.listValues[i],'&', ' ');
     }
@@ -175,15 +176,15 @@ SQL_REQUEST getSqlRequest (char *sqlQuerry){
 }
 void printSqlCommand(SQL_COMMAND *command){
 
-  DEBUG("Nom de la commande : %s\n",command->commandName);
-  DEBUG("Clauses obligatoires :\n");
+  DEBUG("Nom de la commande : %s",command->commandName);
+  DEBUG("Clauses obligatoires :");
   for (size_t i = 0; i < command->nbMandatoryClauses; i++) {
-    DEBUG("%s\n",command->mandatoryClauseNames[i]);
+    DEBUG("%s",command->mandatoryClauseNames[i]);
   }
 
-  DEBUG("Clauses optionnelles:\n");
+  DEBUG("Clauses optionnelles:");
   for (size_t i = 0; i < command->nbOptionnalClauses; i++) {
-    DEBUG("%s\n",command->optionnalClauseNames[i] );
+    DEBUG("%s",command->optionnalClauseNames[i] );
   }
 }
 
@@ -213,33 +214,33 @@ int isOptionnalClause(char* string,SQL_COMMAND *command){
 
 void printStringArray(char stringArray[][maxStringSize], int arraySize){
   for (size_t i = 0; i < arraySize; i++) {
-    DEBUG("%s\n",stringArray[i]);
+    DEBUG("%s",stringArray[i]);
   }
 }
 
 void printQuerryStruct (SQL_REQUEST *sqlQuerry){
 
-  DEBUG("Type de Requete : %d\n",sqlQuerry->sqlType);
-  DEBUG("Nom des tables:\n");
-  DEBUG("%s\n",sqlQuerry->nameTable );
-  DEBUG("Nombre d'arguments :\n");
-  DEBUG("%d\n",sqlQuerry->nbArgs);
-  DEBUG("Nombre de valeurs :\n");
-  DEBUG("%d\n",sqlQuerry->nbValues );
-  DEBUG("Liste des arguments :\n");
+  DEBUG("Type de Requete : %d",sqlQuerry->sqlType);
+  DEBUG("Nom des tables:");
+  DEBUG("%s",sqlQuerry->nameTable );
+  DEBUG("Nombre d'arguments :");
+  DEBUG("%d",sqlQuerry->nbArgs);
+  DEBUG("Nombre de valeurs :");
+  DEBUG("%d",sqlQuerry->nbValues );
+  DEBUG("Liste des arguments :");
   for (size_t i = 0; i < sqlQuerry->nbArgs; i++) {
-    DEBUG("%s\n",sqlQuerry->listArgs[i] );
+    DEBUG("%s",sqlQuerry->listArgs[i] );
   }
 
-  DEBUG("Liste des valeurs :\n");
+  DEBUG("Liste des valeurs :");
   for (size_t i = 0; i < sqlQuerry->nbValues; i++) {
-    DEBUG("%s\n",sqlQuerry->listValues[i] );
+    DEBUG("%s",sqlQuerry->listValues[i] );
   }
 
-  DEBUG("Structure Where:\n");
-  DEBUG("target value :%s\n",sqlQuerry->where.targetValue );
-  DEBUG("Operator :%s\n",sqlQuerry->where.operatorField );
-  DEBUG("source value:%s\n",sqlQuerry->where.sourceValue );
+  DEBUG("Structure Where:");
+  DEBUG("target value :%s",sqlQuerry->where.targetValue );
+  DEBUG("Operator :%s",sqlQuerry->where.operatorField );
+  DEBUG("source value:%s",sqlQuerry->where.sourceValue );
 }
 
 void splitString(char* sqlQuerry,char stringArray[][maxStringSize],int *arraySize, const char *splitCharacter){
@@ -286,14 +287,14 @@ int isValidSqlQuerry (char *sqlQuerry, char stringArray[][maxStringSize],int arr
     //i est l'index du tableau de string, il doit être incrémenté par 2 puisque les arguments dans le tableau sont toujours en position multiple de 2.
     //j représente l'index dans le tableau de clauses.
     if (strcmp(stringArray[i],command->mandatoryClauseNames[j]) != 0){
-      DEBUG("Clause obligatoire non valide : %s au lieu de %s\n",stringArray[i],command->mandatoryClauseNames[j]);
+      DEBUG("Clause obligatoire non valide : %s au lieu de %s",stringArray[i],command->mandatoryClauseNames[j]);
       return 1;
     }
   }
   //Les clauses optionnelles sont toujours après les clauses obligatoires, le scan des clauses optionnelles commence donc à la fin des clauses obligatoires.
     for (size_t i = (command->nbMandatoryClauses*2); i < arraySize ; i += 2) {
       if (isOptionnalClause(stringArray[i],command) != 0){
-        DEBUG("Clause Optionnelle non valide : %s\n",stringArray[i]);
+        DEBUG("Clause Optionnelle non valide : %s",stringArray[i]);
         return 1;
       }
     }

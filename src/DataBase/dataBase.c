@@ -4,6 +4,7 @@
 #include "dataBase.h"
 #include "openFile.h"
 #include "logger.h"
+#include "query.h"
 
 DataBase * connect(char *pathBase) {
   // Parcours des Tables
@@ -25,6 +26,26 @@ DATA_BASE close(DataBase *dataBase) {
   free(dataBase);
 
   return DATA_BASE_SUCCESS;
+}
+
+void openTable(DataBase *dataBase, char *table) {
+  char path[50];
+
+  dataBase->nbTable++;
+
+  if (dataBase->tables == NULL) {
+    dataBase->tables = (Table*)malloc(sizeof(Table) * dataBase->nbTable);
+  }
+  else {
+    dataBase->tables = (Table*)realloc(dataBase->tables, sizeof(Table) * dataBase->nbTable);
+  }
+
+  strcpy(dataBase->tables[dataBase->nbTable-1].name, table);
+  sprintf(path, "%s%s.dbase", PATH_BASE, table);
+
+  if (openFile(&dataBase->tables[dataBase->nbTable-1].file, path, "r+") == 1) {
+    DEBUG("Ouverture du fichier %s", path);
+  }
 }
 
 void openTables(DataBase *dataBase) {
@@ -63,6 +84,7 @@ void closeTables(DataBase *dataBase) {
 
   dataBase->nbTable = 0;
   free(dataBase->tables);
+  dataBase->tables = NULL;
 }
 
 FILE* searchTable(DataBase *dataBase, char* nameTable) {
@@ -184,10 +206,10 @@ void restoreTables(DataBase *dataBase) {
         DEBUG("Ouverture du fichier %s", path);
 
         while (fgets(chaine, TABLE_MAX_COLUM_CHARACTER, file) != NULL) { // On lit le fichier tant qu'on ne reçoit pas d'erreur (NULL)
-          //printf("=> %s", chaine); // On affiche la chaîne qu'on vient de lire
-          //TODO
-          //sprintf(removeFile, "../ressources/bases/%s.dbase", list->nameFiles[i]);
+          //sprintf(removeFile, "%s%s.dbase", PATH_BASE, list->nameFiles[i]);
           //remove(removeFile);
+          DEBUG("COMMAND %s", chaine);
+          excuteQuery(dataBase, chaine);
         }
 
         fclose(file);
@@ -196,5 +218,4 @@ void restoreTables(DataBase *dataBase) {
 
     closeListFile(list);
   }
-  openTables(dataBase);
 }

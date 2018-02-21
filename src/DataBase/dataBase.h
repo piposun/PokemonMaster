@@ -69,7 +69,7 @@ typedef struct {
     \brief Gere le type de la donnees.
 */
 typedef enum {
-  DATA_FIELD_PK = 0,  /**< Type int. */
+  DATA_FIELD_PK = 0,  /**< Type primary_key. */
   DATA_FIELD_INT,     /**< Type int. */
   DATA_FIELD_CHAR,    /**< Type char. */
   DATA_FIELD_FLOAT,   /**< Type float. */
@@ -174,6 +174,13 @@ DATA_BASE recordIsValid(char *record);
     \param dataBase Reference de la DataBase.
 */
 void openTables(DataBase *dataBase);
+
+/*! \fn void openTable(DataBase *dataBase, char *table);
+    \brief TODO.
+
+    \param dataBase Reference de la DataBase.
+*/
+void openTable(DataBase *dataBase, char *table);
 
 /*! \fn void closeTables(DataBase *dataBase)
     \brief TODO.

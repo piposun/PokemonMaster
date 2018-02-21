@@ -17,7 +17,7 @@ int main(int argc, char const *argv[]) {
 
   restoreTables(dataBase);
 
-  query = excuteQuery(dataBase, "SELECT * FROM testBase");
+  query = excuteQuery(dataBase, "SELECT * FROM Pokemon WHERE id=1");
 
   if (query != NULL) {
     for(int i = 0; i < query->nbRecord; i++) {
@@ -25,6 +25,7 @@ int main(int argc, char const *argv[]) {
       for(int j = 0; j < query->descriptor.nbField; j++) {
         field = getDataQueryById(query, i, j);
         switch (getTypeQueryById(query, j)) {
+          case DATA_FIELD_PK:
           case DATA_FIELD_INT:
           {
             DEBUG("Champ %d %s : %d", j+1, getNameQueryById(query, j), (int)*field);

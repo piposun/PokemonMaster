@@ -2,6 +2,7 @@
 #define HEADER_QUERY
 
 #include "dataBase.h"
+#include "sqlCommandParser.h"
 
 /*! \enum DATA_FIELD
     \brief Gere le type de la donnees.
@@ -9,7 +10,8 @@
 typedef enum {
   CONDITION_EQUAL = 0, /**< Condition egale a */
   CONDITION_GREAT,     /**< Condition superieur a */
-  CONDITION_LOW        /**< Condition inferieur a */
+  CONDITION_LOW,       /**< Condition inferieur a */
+  CONDITION_UNK        /**< Condition inconnu */
 }CONDITION;
 
 /*! \struct DescriptorTable
@@ -30,22 +32,13 @@ typedef struct {
   char *data;                 /**< TODO. */
 } Query;
 
-/*! \struct Condition
-    \brief TODO.
-*/
-typedef struct {
-  char field[DATA_FIELD_MAX_CHARACTER]; /**< TODO. */
-  char value[DATA_FIELD_MAX_CHARACTER]; /**< TODO. */
-  CONDITION type;                       /**< TODO. */
-} Condition;
-
 /*! \fn DATA_BASE createDescriptorResult(HeaderTable *header, Query query, char listField[][DATA_FIELD_MAX_CHARACTER])
     \brief TODO.
 
     \param TODO.
     \return TODO.
 */
-DATA_BASE createDescriptorResult(HeaderTable *header, Query *query, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField);
+DATA_BASE createDescriptorResult(HeaderTable *header, Query *query, char listField[][maxStringSize], int nbField);
 
 /*! \fn Query * excuteQuery(DataBase *dataBase, char *sql)
     \brief TODO.
@@ -117,7 +110,7 @@ char * getDataQueryByName(Query * query, int row, char * fieldName);
     \param TODO.
     \return TODO.
 */
-Query * commandSelect(HeaderTable *header, FILE *file, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField);
+Query * commandSelect(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest);
 
 /*! \fn DATA_BASE commandInsert(HeaderTable *header, FILE *file, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField, char listValue[][DATA_FIELD_MAX_CHARACTER])
     \brief TODO.
@@ -126,7 +119,7 @@ Query * commandSelect(HeaderTable *header, FILE *file, char listField[][DATA_FIE
     \param TODO.
     \return TODO.
 */
-DATA_BASE commandInsert(HeaderTable *header, FILE *file, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField, char listValue[][DATA_FIELD_MAX_CHARACTER]);
+DATA_BASE commandInsert(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest);
 
 /*! \fn DATA_BASE commandDelete(HeaderTable *header, FILE *file, Condition *condition);
     \brief TODO.
@@ -135,7 +128,7 @@ DATA_BASE commandInsert(HeaderTable *header, FILE *file, char listField[][DATA_F
     \param TODO.
     \return TODO.
 */
-DATA_BASE commandDelete(HeaderTable *header, FILE *file, Condition *condition);
+DATA_BASE commandDelete(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest);
 
 /*! \fn DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField, char listValue[][DATA_FIELD_MAX_CHARACTER])
     \brief TODO.
@@ -144,7 +137,7 @@ DATA_BASE commandDelete(HeaderTable *header, FILE *file, Condition *condition);
     \param TODO.
     \return TODO.
 */
-DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField, char listValue[][DATA_FIELD_MAX_CHARACTER]);
+DATA_BASE commandUpdate(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest);
 
 /*! \fn DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record)
     \brief TODO.
@@ -153,7 +146,7 @@ DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, c
     \param TODO.
     \return TODO.
 */
-DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record);
+DATA_BASE checkCondition(HeaderTable *header, WHERE_CLAUSE *where, char *record);
 
 /*! \fn int convertCharTypeToSize(char *type)
     \brief TODO.
@@ -181,5 +174,24 @@ DATA_FIELD convertCharTypeToType(char *cType);
     \return TODO.
 */
 void updateTimeHeader(HeaderTable *headerTable);
+
+/*! \fn Query *query executeCommand(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest)
+    \brief TODO.
+
+    \param TODO.
+    \param TODO.
+    \return TODO.
+*/
+Query * executeCommand(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest);
+
+
+/*! \fn DATA_BASE commandCreateTable(SQL_REQUEST *sqlRequest)
+    \brief TODO.
+
+    \param TODO.
+    \param TODO.
+    \return TODO.
+*/
+DATA_BASE commandCreateTable(SQL_REQUEST *sqlRequest);
 
 #endif /* HEADER_QUERY */

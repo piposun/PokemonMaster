@@ -1,3 +1,6 @@
+#ifndef HEADER_SQL_PARSER
+#define HEADER_SQL_PARSER
+
 #define maxArraySize (15)
 #define maxStringSize (30)
 #define nbMaxClauses (8)
@@ -157,3 +160,5 @@ void replaceChar (char string[], char searchChar, char replaceChar);
     \param request Pointeur de la structure de SQL_REQUEST qui sera remplie.
 */
 void feedCreateTableStruct(char stringArray[][maxStringSize],int arraySize,SQL_REQUEST *request);
+
+#endif /* HEADER_SQL_PARSER */
