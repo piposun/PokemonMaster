@@ -15,10 +15,10 @@ int choixPokemon(int *pokeId, char *pokeName){
   int requestChoice = 0; /* variable de selection du usecase de l'utilisateur */
 
   MENU("\nVoulez-vous choisir le Pokemon par :");
-  MENU("\n1 - Son Nom")
-  MENU("\n2 - Son numéro")
-  MENU("\n0 - Retour au menu principal")
-  keyboardTest=KeyboardInt(&requestChoice, 0, 2);
+  MENU("\n1 - Son Nom");
+  MENU("\n2 - Son numéro");
+  MENU("\n0 - Retour au menu principal");
+  keyboardTest=keyboardInt(&requestChoice, 0, 2);
   if (keyboardTest == 1) {
     ERROR("\n\n\tProbleme dans la saisie du choix");
   }

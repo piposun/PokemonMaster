@@ -38,7 +38,7 @@ void userRequestsSelection(int *requestChoice) {
   int keyboardTest = 0; /* Variable de test de la selection des cas d'utilisation par l'operateur */
   int password = 0; /* Variable contenant le mot de passe saisi par l'administrateur*/
 
-      keyboardTest = KeyboardInt(requestChoice, 0, 10);
+      keyboardTest = keyboardInt(requestChoice, 0, 10);
 
       if (keyboardTest == 1) {
         ERROR("\n\n\tProbleme dans la saisie d'un cas d'utilisation");
