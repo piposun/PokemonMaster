@@ -18,6 +18,7 @@ void log_print(LEVEL_LOG level, int line, char *file, const char *format, ...)
   char info[255];
   va_list args;                 // Liste des arguments
 
+  info[0]=0;
 
   // initialisation des arguments
   va_start(args, format);
@@ -28,7 +29,9 @@ void log_print(LEVEL_LOG level, int line, char *file, const char *format, ...)
   // Creation de la chaine de caractere des arguments
   vsnprintf(va_msg, strlen(format) + max_va_list_size, format, args);
 
-  sprintf(info, "%s:%d ", file, line);
+  if(level != LEVEL_LOG_INFO && level != LEVEL_LOG_MENU) {
+    sprintf(info, "%s:%d ", file, line);
+  }
 
   // Taille du message
   msgSize = strlen(info) + strlen(va_msg) + SIZE_HEADER  + strlen( strerror(errno)) + SIZE_MARGE;
@@ -36,13 +39,16 @@ void log_print(LEVEL_LOG level, int line, char *file, const char *format, ...)
   // Allocation de la variable du message complet
   msg = (char*)malloc(msgSize);
 
-  sprintf(msg, "\t%s", info);
+  if(level != LEVEL_LOG_INFO && level != LEVEL_LOG_MENU) {
+    sprintf(msg, "\t%s", info);
+  }
 
   /* Verifie le niveau du log avec le niveau demande
      et ajoute l'entete du message ainsi que la couleur */
   if(level == LEVEL_LOG_INFO) {
     outColor = COL_INFO;
-    sprintf(msg + strlen(info) + 1, "INFO  : ");
+  } else if(level == LEVEL_LOG_MENU) {
+    outColor = COL_MENU;
   } else if(level == LEVEL_LOG_WARN && dbgLevel >= LEVEL_LOG_WARN) {
     outColor = COL_WARN;
     sprintf(msg + strlen(info) + 1, "WARN  : ");

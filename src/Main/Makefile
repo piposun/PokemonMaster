@@ -2,7 +2,7 @@ EXECUTABLE = PokemonMaster
 
 LIBS	= -lDataBase -lTools $(LIBX)
 
-SRCS	= pokemonMaster.c
+SRCS	= keyboard.c menu.c usecases.c
 
 OBJS  = $(SRCS:.c=.o)
 
