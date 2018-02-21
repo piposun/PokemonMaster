@@ -181,7 +181,7 @@ DATA_BASE checkCondition(HeaderTable *header, WHERE_CLAUSE *where, char *record)
   if (where == NULL || convTypeWhere(where->operatorField) == CONDITION_UNK) {
     return DATA_BASE_SUCCESS;
   }
-  
+
   for(int i = 0; i < header->nbField; i++) {
     if(strcmp(where->targetValue, header->descriptor[i].name) == 0) {
       switch (convTypeWhere(where->operatorField)) {
