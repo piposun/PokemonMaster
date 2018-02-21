@@ -75,7 +75,7 @@ void pokemonList(int pokeId){
   }
   else{
     if (query->nbRecord>0) {
-      for(int i = 1; i < query->nbRecord; i++) { //Commence à 1 pour ignorer le descripteur
+      for(int i = 0; i < query->nbRecord; i++) {
         for(int j = 0; j < query->descriptor.nbField; j++) {
           field = getDataQueryById(query, i, j);
           switch (getTypeQueryById(query, j)) {
@@ -106,6 +106,7 @@ void myPokemonList(void){
   char num[]={Numero};
   char name[]={Nom};
   char textQuery[255]={"SELECT poke_id FROM Pos"};
+  int fieldInt=0;
 
     query = excuteQuery(dataBase, textQuery);
 
@@ -126,7 +127,8 @@ void myPokemonList(void){
 
               case DATA_FIELD_INT:
                 DEBUG("%c, ", field); /* Affiche les pokeId reçus */
-                void pokemonList(int (int)*field); /* Appel la fonction pokemonList pour remplir le tableau ligne par ligne*/
+                memcpy(&fieldInt, field, sizeof(int));
+                pokemonList(fieldInt); /* Appel la fonction pokemonList pour remplir le tableau ligne par ligne*/
               break;
 
               case DATA_FIELD_CHAR:
