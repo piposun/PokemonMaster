@@ -210,9 +210,9 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
             sprintf(textQuery,"DELETE * FROM Pokemon WHERE id=\"%d\"", pokeId);
             query = excuteQuery(dataBase, textQuery);
             if (query == NULL) {
-              ERROR("Erreur dans la requete");
+              MENU("Pokemon supprime");
             } else {
-              MENU("\nCaractere # apposer devant le pokemon de la base (supprime)");
+              ERROR("Erreur dans la requete");
             }
           } else {
             MENU("Suppression du pokemon annulee");
