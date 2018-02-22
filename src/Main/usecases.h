@@ -59,7 +59,7 @@ void myPokemonList(DataBase *dataBase);
 
     \param dataBase pointeur sur la base de donnees.
 */
-void pokemonProfil(int pokeId, DataBase *dataBase);
+int pokemonProfil(int pokeId, DataBase *dataBase);
 
 /*! \fn void updatePokemonList(DataBase *dataBase);
     \brief Cette fonction commande l'ajout d'un pokemon a la liste des pokemons possedes par l'utilisateur.

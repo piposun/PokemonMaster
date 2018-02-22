@@ -1,4 +1,4 @@
-CREATE TABLE JointGroup (id PRIMARY_KEY, id_species INT, id_group INT)
+CREATE TABLE JointGroup (id PRIMARY_KEY, id_species INT, id_group INT, padding[1] char)
 INSERT INTO JointGroup VALUES (1,1)
 INSERT INTO JointGroup VALUES (1,7)
 INSERT INTO JointGroup VALUES (2,1)
