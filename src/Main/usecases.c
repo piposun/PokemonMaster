@@ -252,7 +252,8 @@ int pokemonProfil(int pokeId, DataBase *dataBase){
               closeQuery(query);
             }
           }
-        //closeQuery(queryNature);
+        closeQuery(queryGroup);
+        closeQuery(queryNature);
         closeQuery(queryPokemon);
         }
       }
