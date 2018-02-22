@@ -75,8 +75,8 @@ void pokemonList(int pokeId, DataBase *dataBase){
   if (pokeId==0) { // Le pokemon 0 n'existe pas, c'est donc une clé pour tous les afficher
     query = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
     INFO("\nInventaire des Pokemons dans la base\n");
-    INFO("\n---------------------------------\n");
-    INFO("\n|%*s|%*s|", sizeNum, num, sizeName, name);
+    INFO("-----------------------------");
+    INFO("|%*s|%*s|", sizeNum, num, sizeName, name);
   }
   else{
     sprintf(textQuery,"SELECT num,name FROM Pokemon WHERE id=\"%d\"", pokeId); // Complete la requete SQL avec les pokeId
@@ -109,6 +109,7 @@ void pokemonList(int pokeId, DataBase *dataBase){
       INFO("\nIl n'y a pas de donnees correspondant aux criteres demandes.\n");
       closeQuery(query);
     }
+  INFO("-----------------------------");
   }
 }
 
@@ -233,8 +234,37 @@ void addPokemon(){
 
 void updatePokemon(){
 }
+*/
 
-void administrator(){
+void administrator(dataBase){
+
+restoreTables(dataBase);
+
+query = excuteQuery(dataBase, "SELECT * FROM Pokemon WHERE id=1");
+
+if (query != NULL) {
+  for(int i = 0; i < query->nbRecord; i++) {
+    char * field;
+    for(int j = 0; j < query->descriptor.nbField; j++) {
+      field = getDataQueryById(query, i, j);
+      switch (getTypeQueryById(query, j)) {
+        case DATA_FIELD_PK:
+        case DATA_FIELD_INT:
+        {
+          DEBUG("Champ %d %s : %d", j+1, getNameQueryById(query, j), (int)*field);
+        }
+        break;
+        case DATA_FIELD_CHAR:
+        {
+          DEBUG("Champ %d %s : %s",j+1, getNameQueryById(query, j), field);
+        }
+        break;
+        default:
+        break;
+      }
+    }
+  }
+
+  closeQuery(query);
 
 }
-*/
