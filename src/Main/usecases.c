@@ -17,6 +17,7 @@ int choicePokemon(int *pokeId, DataBase *dataBase){
   char pokeName[sizeNum]={0};
   Query *query = NULL;
   char  *field = NULL;
+  char  *ptPokeId = NULL;
   char num[]="Numero";
   char name[]="Nom";
   char textQuery[255]={0};
@@ -40,7 +41,8 @@ int choicePokemon(int *pokeId, DataBase *dataBase){
         } else {
           sprintf(textQuery,"SELECT id FROM Pokemon WHERE name=\"%s\"", pokeName); // Complete la requete SQL avec les pokeId
           query = excuteQuery(dataBase, textQuery); // Requete SQL
-          memcpy(&pokeId,getDataQueryById(query, 0, 0), sizeof(int));
+          ptPokeId = getDataQueryById(query, 0, 0);
+          memcpy(pokeId,ptPokeId, sizeof(int));
           break;
         }
 
@@ -52,13 +54,15 @@ int choicePokemon(int *pokeId, DataBase *dataBase){
         } else {
           sprintf(textQuery,"SELECT id FROM Pokemon WHERE num=\"%d\"", pokeNum); // Complete la requete SQL avec les pokeId
           query = excuteQuery(dataBase, textQuery); // Requete SQL
-          memcpy(&pokeId,getDataQueryById(query, 0, 0), sizeof(int));
+          ptPokeId = getDataQueryById(query, 0, 0);
+          memcpy(pokeId,ptPokeId, sizeof(int));
          break;
         }
       default:
         break;
     }
   }
+  closeQuery(query);
   return 0;
 }
 
@@ -130,9 +134,8 @@ void myPokemonList(DataBase *dataBase){
     else{
       if (query->nbRecord>0) {
         INFO("\nInventaire des Pokemons attrapes\n");
-        INFO("\n--------------------------------\n");
-        INFO("\n| %*s", sizeNum, num);
-        INFO("| %*s|\n", sizeName, name);
+        INFO("-----------------------------");
+        INFO("|%*s|%*s|", sizeNum, num, sizeName, name);
 
         for(int i = 0; i < query->nbRecord; i++) {
           for(int j = 0; j < query->descriptor.nbField; j++) {
@@ -199,6 +202,7 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
 
 
   choiceTest=choicePokemon(&pokeId,dataBase); // On appel la fonction pour selectionner l'id du pokemon demander par l'admin
+  DEBUG ("%d pokeId",pokeId);
   if (choiceTest == 1) {
     ERROR("\n\n\tProbleme dans la saisie du Pokemon");
   } else {
@@ -223,8 +227,8 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
         }
       }
     }
-    closeQuery(query);
   }
+  closeQuery(query);
 }
 /*
 void addPokemon(){
