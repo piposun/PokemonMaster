@@ -69,14 +69,14 @@ void pokemonList(int pokeId, DataBase *dataBase){
   char num[]="Numero";
   char name[]="Nom";
   char textQuery[255]={"SELECT num,name FROM Pokemon"};
+  int receptPokeId=0;
 
 
   if (pokeId==0) { // Le pokemon 0 n'existe pas, c'est donc une clé pour tous les afficher
     query = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
     INFO("\nInventaire des Pokemons dans la base\n");
     INFO("\n---------------------------------\n");
-    INFO("\n| %*s", sizeNum, num);
-    INFO("| %*s|", sizeName, name);
+    INFO("\n|%*s|%*s|", sizeNum, num, sizeName, name);
   }
   else{
     sprintf(textQuery,"SELECT num,name FROM Pokemon WHERE id=\"%d\"", pokeId); // Complete la requete SQL avec les pokeId
@@ -93,10 +93,10 @@ void pokemonList(int pokeId, DataBase *dataBase){
           field = getDataQueryById(query, i, j);
           switch (getTypeQueryById(query, j)) {
             case DATA_FIELD_INT:
-              INFO("| %*d", sizeNum, (int)*field);
+              memcpy(&receptPokeId, field, sizeof(int));
               break;
             case DATA_FIELD_CHAR:
-              INFO("| %*s|",sizeName, field);
+              INFO("| %*d|%*s|", sizeNum, receptPokeId, sizeName, field);
               break;
             default:
               break;
