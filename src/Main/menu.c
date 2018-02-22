@@ -35,7 +35,7 @@ void userRequestsMenu() { /* Menu d'affichage des cas d'utilisation de la base d
 
 void userRequestsSelection(int *requestChoice, DataBase *dataBase) {
   int keyboardTest = 0; /* Variable de test de la selection des cas d'utilisation par l'operateur */
-  int password = 0; /* Variable contenant le mot de passe saisi par l'administrateur*/
+  int password = 0, validation=0; /* Variable contenant le mot de passe saisi par l'administrateur*/
 
       keyboardTest = keyboardInt(requestChoice, 0, 10);
 
@@ -105,19 +105,26 @@ void userRequestsSelection(int *requestChoice, DataBase *dataBase) {
 
           if (keyboardInt(&password,0,999)==0) {
             if(password==111){
-              //administrator(dataBase);
+              MENU("Voulez vous restaurer la base de donnee? (0=non / 1=oui)");
+              if (keyboardInt(&validation,0,1)==0) {
+                if (validation == 1) {
+                  administrator(dataBase);
+                  break;
+                } else {
+                  MENU("Restauration annulee");
+                  break;
+                }
+              } else {
+                ERROR("\nMot de passe incorrect\n");
+                break;
+              }
+            }else {
+              ERROR("\n\n\tProbleme dans la saisie du mot de passe");
               break;
             }
-            else
-              ERROR("\nMot de passe incorrect\n");
-            break;
-          }
-          else {
-            ERROR("\n\n\tProbleme dans la saisie du mot de passe");
-            break;
-          }
+            }
           default:
             break;
         }
-      }
+        }
 }
