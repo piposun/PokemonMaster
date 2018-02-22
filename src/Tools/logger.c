@@ -7,6 +7,8 @@
 
 #include "logger.h"
 
+#define IS_DEBUG 1 // 1 : Log BEBUG affiché / 0 : Log DEBUG caché
+
 void log_print(LEVEL_LOG level, int line, char *file, const char *format, ...)
 {
   int dbgLevel = LEVEL_LOG_DEBUG; // Niveau de log par defaut
@@ -18,7 +20,13 @@ void log_print(LEVEL_LOG level, int line, char *file, const char *format, ...)
   char info[255];
   va_list args;                 // Liste des arguments
 
+  // Force la chaine à vide
   info[0]=0;
+
+  // Vérifie si les logs DEBUG doivent être affiché
+  if ((!IS_DEBUG) && level == LEVEL_LOG_DEBUG) {
+    return;
+  }
 
   // initialisation des arguments
   va_start(args, format);
