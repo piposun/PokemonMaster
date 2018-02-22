@@ -7,8 +7,6 @@
 #include "query.h"
 
 DataBase * connect(char *pathBase) {
-  // Parcours des Tables
-
   DataBase *dataBase = NULL;
   dataBase = (DataBase*)malloc(sizeof(DataBase));
 
@@ -16,6 +14,7 @@ DataBase * connect(char *pathBase) {
     return NULL;
   }
 
+  // Ouverture des Tables
   openTables(dataBase);
 
   return dataBase;
