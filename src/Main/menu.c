@@ -54,7 +54,7 @@ void userRequestsSelection(int *requestChoice, DataBase *dataBase) {
             //pokemonProfil(dataBase);
             break;
           case 3: /* Ajouter un pokemon a ma collection personnelle */
-            //updatePokemonList(dataBase);
+            updatePokemonList(dataBase);
             break;
           case 4: /* Afficher la liste des pokemons possedes */
             myPokemonList(dataBase);

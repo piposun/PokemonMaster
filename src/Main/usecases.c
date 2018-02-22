@@ -137,12 +137,13 @@ void myPokemonList(DataBase *dataBase){
         INFO("\nInventaire des Pokemons attrapes\n");
         INFO("-----------------------------");
         INFO("|%*s|%*s|", sizeNum, num, sizeName, name);
-
+DEBUG("TEST 1");
         for(int i = 0; i < query->nbRecord; i++) {
+          DEBUG("TEST 2");
           for(int j = 0; j < query->descriptor.nbField; j++) {
+                      DEBUG("TEST 3");
             field = getDataQueryById(query, i, j);
             switch (getTypeQueryById(query, j)) {
-
               case DATA_FIELD_INT:
                 DEBUG("%c, ", field); // Affiche les pokeId reçus
                 memcpy(&fieldInt, field, sizeof(int));
@@ -203,7 +204,6 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
 
 
   choiceTest=choicePokemon(&pokeId,dataBase); // On appel la fonction pour selectionner l'id du pokemon demander par l'admin
-  DEBUG ("pokeId = %d",pokeId);
   if (choiceTest == 1) {
     ERROR("\n\n\tProbleme dans la saisie du Pokemon");
   } else {
@@ -219,7 +219,7 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
               MENU("Pokemon supprime");
             } else {
               ERROR("Erreur dans la requete");
-            }      
+            }
           } else {
             MENU("Suppression du pokemon annulee");
           }
@@ -240,6 +240,41 @@ void addPokemon(){
 void updatePokemon(){
 }
 */
+
+void updatePokemonList(DataBase *dataBase){
+  Query *query = NULL; // Pointeur de structure qui recupere les donnees suite a une requete
+  char textQuery[255]={0}; // CHaine de caracteres contenant la requete SQL
+  int pokeId=0, choiceTest=0, validation=0;
+  char pokeName[sizeName]={0};
+
+
+  choiceTest=choicePokemon(&pokeId,dataBase); // On appel la fonction pour selectionner l'id du pokemon
+  if (choiceTest == 1) {
+    ERROR("\n\n\tProbleme dans la saisie du Pokemon");
+  } else {
+    if (choiceTest == 0) {
+      if(pokeId != 0) {
+        //pokemonProfil(pokeId,dataBase); // On affiche le profil complet du pokemon
+        MENU("\nEtes-vous sur de vouloir ajouter le pokemon? (0=non / 1=oui)");
+        if (keyboardInt(&validation,0,1)==0) {
+          if (validation == 1) {
+            sprintf(textQuery,"INSERT INTO Pos VALUES (\"%d\")", pokeId);
+            query = excuteQuery(dataBase, textQuery);
+            if (query == NULL) {
+              MENU("Pokemon ajoute");
+            } else {
+              ERROR("Erreur dans la requete");
+            }
+          } else {
+            MENU("Ajout du pokemon annulee");
+          }
+        } else {
+          MENU("\nProbleme dans la saisie de la validation");
+        }
+      }
+    }
+  }
+}
 
 void administrator(DataBase *dataBase){
 Query *query = NULL;
