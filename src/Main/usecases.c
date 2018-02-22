@@ -208,7 +208,7 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
         MENU("\nEtes-vous sur de vouloir supprimer le pokemon? (0=non / 1=oui)");
         if (keyboardInt(&validation,0,1)==0) {
           if (validation == 1) {
-            sprintf(textQuery,"DELETE * FROM Pokemon WHERE id=\"%d\"", pokeId);
+            sprintf(textQuery,"DELETE FROM Pokemon WHERE id=\"%d\"", pokeId);
             query = excuteQuery(dataBase, textQuery);
             if (query == NULL) {
               MENU("Pokemon supprime");
