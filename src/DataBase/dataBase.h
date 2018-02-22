@@ -11,50 +11,50 @@
 #include <stdio.h>
 
 /*! \def CHARACTER_RECORD_VALID
-    \brief TODO.
+    \brief Définition du caractère valide d'un enregistrement.
 */
 #define CHARACTER_RECORD_VALID '\0'
 
 /*! \def CHARACTER_RECORD_INVALID
-    \brief TODO.
+    \brief Définition du caractère invalide d'un enregistrement.
 */
 #define CHARACTER_RECORD_INVALID '#'
 
 /*! \def DATA_FIELD_MAX_CHARACTER
-    \brief TODO.
+    \brief Définition de la taille max du nom des champs dans la base.
 */
 #define DATA_FIELD_MAX_CHARACTER 20
 
 /*! \def TABLE_MAX_COLUM_CHARACTER
-    \brief TODO.
+    \brief Définition de la taille max de la valeur des champs dans la base.
 */
 #define TABLE_MAX_COLUM_CHARACTER 1000
 
 /*! \def PATH_MAX_CHARACTER
-    \brief TODO.
+    \brief Définition de la taille max du chemin d'accès des fichiers.
 */
 #define PATH_MAX_CHARACTER 100
 
 /*! \def PATH_BASE
-    \brief TODO.
+    \brief Définition du chemin d'accès des fichiers.
 */
 #define PATH_BASE "../ressources/bases/"
 
 /*! \struct Date
-    \brief TODO.
+    \brief Structure contenant la date en jour, mois, année.
 */
 typedef struct {
-  short day;   /**< TODO. */
-  short month; /**< TODO. */
-  short year;  /**< TODO. */
+  short day;   /**< Champ jour. */
+  short month; /**< Champ mois. */
+  short year;  /**< Champ année. */
 } Date;
 
 /*! \struct Table
-    \brief TODO.
+    \brief Structure d'une table de la base.
 */
 typedef struct {
   char name[DATA_FIELD_MAX_CHARACTER]; /**< Contient le nom de la table. */
-  FILE *file; /**< Reference du fichier de la table. */
+  FILE *file; /**< Référence du fichier de la table. */
 } Table;
 
 /*! \struct DataBase
@@ -62,7 +62,7 @@ typedef struct {
 */
 typedef struct {
   int nbTable; /**< Contient le nombre de table. */
-  Table *tables; /**< TODO. */
+  Table *tables; /**< Pointer sur l'ensemble des tables. */
 } DataBase;
 
 /*! \enum DATA_FIELD
@@ -78,13 +78,13 @@ typedef enum {
 }DATA_FIELD;
 
 /*! \struct DataField
-    \brief Structure TODO.
+    \brief Structure d'un élément de description d'un champ dans une table.
 */
 typedef struct {
   int offset; /**< La position de la donnees dans . */
   DATA_FIELD type; /**< Le type de la donnees. */
-  char name[DATA_FIELD_MAX_CHARACTER]; /**< TODO. */
-  int size; /**< TODO. */
+  char name[DATA_FIELD_MAX_CHARACTER]; /**< Le nom du champ. */
+  int size; /**< La taille du champ. */
 } DataField;
 
 
@@ -97,102 +97,103 @@ typedef enum {
 }DATA_BASE;
 
 /*! \struct HeaderTable
-    \brief TODO.
+    \brief Structure de l'entête d'une table de la base.
 */
 typedef struct {
-  short valid;           /**< TODO. */
-  Date lastUpdate;       /**< TODO. */
-  int nbRecord;          /**< TODO. */
-  int nbField;           /**< TODO. */
-  int lengthHeader;      /**< TODO. */
-  int lengthRecord;      /**< TODO. */
-  int lengthField;       /**< TODO. */
-  DataField *descriptor; /**< TODO. */
+  short valid;           /**< Champ de validité de la table. */
+  Date lastUpdate;       /**< Champ de la dernière mise à jour. */
+  int nbRecord;          /**< Nombre d'enregistrement dans la table. */
+  int nbField;           /**< Nombre de champs par enregistrement. */
+  int lengthHeader;      /**< Taille de l'entête. */
+  int lengthRecord;      /**< Taille des enregistremnts. */
+  int lengthField;       /**< Taille de l'entête de description des champs. */
+  DataField *descriptor; /**< Pointer sur les descriptions des champs. */
 } HeaderTable;
 
 /*! \fn DataBase * connect(char *pathBase)
     \brief Cette fonction initialise la DataBase.
 
-    \param dataBase Reference de la DataBase a initialise.
-    \param pathBase Chemin d'acces aux bases. Si NULL => chemin par defaut.
-    \return Renvoie la valeur DATA_BASE.
+    \param pathBase Chemin d'accès aux bases. Si NULL => chemin par défaut.
+    \return Renvoie la référence de la DataBase à initialise.
 */
 DataBase * connect(char *pathBase);
 
 /*! \fn  DATA_BASE close(DataBase *dataBase)
-    \brief Cette fonction detruit la reference a la DataBase.
+    \brief Cette fonction detruit la Référence à la DataBase.
 
-    \param dataBase Reference de la DataBase a detruire.
+    \param dataBase Référence de la DataBase à detruire.
     \return Renvoie la valeur DATA_BASE.
 */
 DATA_BASE close(DataBase *dataBase);
 
 /*! \fn HeaderTable * getHeaderTable(FILE* tableFile)
-    \brief TODO.
+    \brief Cette fonction initialise l'entete d'un table passé en argument.
 
-    \param tableFile Reference du fichier de la table.
+    \param tableFile Référence du fichier de la table.
     \return Renvoie l'entete de la table.
 */
 HeaderTable * getHeaderTable(FILE* tableFile);
 
 /*! \fn void destroyHeader(HeaderTable *header)
-    \brief TODO.
+    \brief Détruit la référence de l'entête d'une table passé en argument.
 
-    \param TODO
+    \param Référence de l'entête de la table à détruire.
 */
 void destroyHeader(HeaderTable *header);
 
 /*! \fn FILE* searchTable(DataBase *dataBase, char* nameTable)
-    \brief TODO.
+    \brief Cette fonction recherche la table dans la base de donnée et retourne le fichier asocié.
 
-    \param dataBase Reference de la DataBase.
+    \param dataBase Référence de la DataBase.
     \param nameTable Nom de la table.
-    \return Reference du fichier de la table.
+    \return Référence du fichier de la table.
 */
 FILE* searchTable(DataBase *dataBase, char* nameTable);
 
 /*! \fn char * getRecord(HeaderTable *header, FILE* file, int indexRecord)
-    \brief TODO.
+    \brief Cette fonction permet de récupérer un enregistrement dans une table.
 
-    \param dataBase Reference de la DataBase.
-    \param TODO.
-    \return TODO.
+    \param header Référence de l'entête de la table.
+    \param file Référence du fichier de la table.
+    \param indexRecord Le numéro de l'enregistrement à récupérer.
+    \return Référence de l'enregistrement.
 */
 char * getRecord(HeaderTable *header, FILE* file, int indexRecord);
 
 /*! \fn DATA_BASE recordIsValid(char *record)
-    \brief TODO.
+    \brief Cette fonction vérifie si l'enregistrement est valide.
 
-    \param TODO.
-    \return TODO.
+    \param Référence de l'enregistrement.
+    \return Renvoie DATA_BASE. => DATA_BASE_SUCCESS si l'enregistrement est valide.
 */
 DATA_BASE recordIsValid(char *record);
 
 /*! \fn openTables(DataBase *dataBase)
-    \brief TODO.
+    \brief Cette fonction initialise toutes les tables disponibles dans le répertoire ressources/bases.
 
-    \param dataBase Reference de la DataBase.
+    \param dataBase Référence de la DataBase.
 */
 void openTables(DataBase *dataBase);
 
 /*! \fn void openTable(DataBase *dataBase, char *table);
-    \brief TODO.
+    \brief Cette fonction initialise une table via son nom.
 
-    \param dataBase Reference de la DataBase.
+    \param dataBase Référence de la DataBase.
+    \param dataBase Nom de la table à initialiser.
 */
 void openTable(DataBase *dataBase, char *table);
 
 /*! \fn void closeTables(DataBase *dataBase)
-    \brief TODO.
+    \brief Cette fonction détruit toutes les références des tables de la base.
 
-    \param dataBase Reference de la DataBase.
+    \param dataBase Référence de la DataBase.
 */
 void closeTables(DataBase *dataBase);
 
 /*! \fn restoreTables(DataBase *dataBase)
-    \brief TODO.
+    \brief Cette fonction restores les tables dans un état d'usine.
 
-    \param dataBase Reference de la DataBase.
+    \param dataBase Référence de la DataBase.
 */
 void restoreTables(DataBase *dataBase);
 #endif /* HEADER_DATA_BASE */
