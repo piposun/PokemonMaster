@@ -43,6 +43,7 @@ int choicePokemon(int *pokeId, DataBase *dataBase){
           query = excuteQuery(dataBase, textQuery); // Requete SQL
           ptPokeId = getDataQueryById(query, 0, 0);
           memcpy(pokeId,ptPokeId, sizeof(int));
+          closeQuery(query);
           break;
         }
 
@@ -56,13 +57,13 @@ int choicePokemon(int *pokeId, DataBase *dataBase){
           query = excuteQuery(dataBase, textQuery); // Requete SQL
           ptPokeId = getDataQueryById(query, 0, 0);
           memcpy(pokeId,ptPokeId, sizeof(int));
+          closeQuery(query);
          break;
         }
       default:
         break;
     }
   }
-  closeQuery(query);
   return 0;
 }
 
@@ -202,7 +203,7 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
 
 
   choiceTest=choicePokemon(&pokeId,dataBase); // On appel la fonction pour selectionner l'id du pokemon demander par l'admin
-  DEBUG ("%d pokeId",pokeId);
+  DEBUG ("pokeId = %d",pokeId);
   if (choiceTest == 1) {
     ERROR("\n\n\tProbleme dans la saisie du Pokemon");
   } else {
@@ -218,7 +219,7 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
               MENU("Pokemon supprime");
             } else {
               ERROR("Erreur dans la requete");
-            }
+            }      
           } else {
             MENU("Suppression du pokemon annulee");
           }
@@ -228,7 +229,7 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
       }
     }
   }
-  closeQuery(query);
+
 }
 /*
 void addPokemon(){
