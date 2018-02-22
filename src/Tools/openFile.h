@@ -37,7 +37,7 @@ typedef enum {
 */
 int openFile(FILE **file, char *pathName, char *mode);
 
-/*! \fn ListFiles *getListFile()
+/*! \fn ListFiles *getListFile(char *pathRep, char *extension)
     \brief Cette fonction fournie la liste des nom des fichiers dans un répertoire.
 
     \param pathRep Chemin d'accès du répertoire
@@ -46,7 +46,7 @@ int openFile(FILE **file, char *pathName, char *mode);
 */
 ListFiles *getListFile(char *pathRep, char *extension);
 
-/*! \fn int closeListFile()
+/*! \fn void closeListFile(ListFiles *list)
     \brief Cette fonction libère les listes des fichiers.
 
     \param list Référence à la liste des fichiers

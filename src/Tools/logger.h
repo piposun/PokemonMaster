@@ -75,7 +75,7 @@ LEVEL_LOG_MENU /**< Indique le niveau de log MENU */
     \brief Macro qui appel la fonction log_print avec le niveau LEVEL_LOG_MENU.
 */
 #define MENU(format, ...) log_print(LEVEL_LOG_MENU, __LINE__, __FILE__, format, ##__VA_ARGS__)
-/*! \fn void log_print(LEVEL_LOG level, const char *format, ...)
+/*! \fn void log_print(LEVEL_LOG level, int line, char *file, const char *format, ...)
     \brief Ecrit les logs dans le terminal en fonction de leur niveau.
 
     \param level Niveau du message.

@@ -1,6 +1,13 @@
 #ifndef HEADER_QUERY
 #define HEADER_QUERY
 
+/*! \file query.h
+    \brief Gestionnare des commande SQL
+    \version 0.1
+
+    Contient les fonctions de gestion des commande SQL.
+*/
+
 #include "dataBase.h"
 #include "sqlCommandParser.h"
 
@@ -32,7 +39,7 @@ typedef struct {
   char *data;                 /**< Pointer sur la data. */
 } Query;
 
-/*! \fn DATA_BASE createDescriptorResult(HeaderTable *header, Query query, char listField[][DATA_FIELD_MAX_CHARACTER])
+/*! \fn DATA_BASE createDescriptorResult(HeaderTable *header, Query *query, char listField[][maxStringSize], int nbField)
     \brief Cette fonction cré et initialise l'entête de description des champs pour la réponse.
 
     \param header Référence de l'entête de la table.
@@ -88,7 +95,7 @@ int getSizeQueryById(Query * query, int index);
 */
 char * getNameQueryById(Query * query, int index);
 
-/*! \fn char * getDataQueryById(Query * query, int index)
+/*! \fn char * getDataQueryById(Query * query, int row, int colum)
     \brief Cette fonction renvoie la data d'un champ de réponse via les indexs de lignes et de colonnes.
 
     \param dataBase Reference de la réponse.
@@ -98,7 +105,7 @@ char * getNameQueryById(Query * query, int index);
 */
 char * getDataQueryById(Query * query, int row, int colum);
 
-/*! \fn char * getDataQueryByName(Query * query, char * fieldName)
+/*! \fn char * getDataQueryByName(Query * query, int row, char * fieldName)
     \brief Cette fonction renvoie la data d'un champ via l'index de la ligne et le nom du champ.
 
     \param dataBase Reference de la réponse.
@@ -128,7 +135,7 @@ Query * commandSelect(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest);
 */
 DATA_BASE commandInsert(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest);
 
-/*! \fn DATA_BASE commandDelete(HeaderTable *header, FILE *file, Condition *condition);
+/*! \fn DATA_BASE commandDelete(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest)
     \brief Cette fonction execute la commande DELETE.
 
     \param hedader Référence à l'entête de la table.
@@ -138,7 +145,7 @@ DATA_BASE commandInsert(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest
 */
 DATA_BASE commandDelete(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest);
 
-/*! \fn DATA_BASE commandUpdate(HeaderTable *header, FILE *file, Condition *condition, char listField[][DATA_FIELD_MAX_CHARACTER], int nbField, char listValue[][DATA_FIELD_MAX_CHARACTER])
+/*! \fn DATA_BASE commandUpdate(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest)
     \brief Cette fonction execute la commande UPDATE.
 
     \param hedader Référence à l'entête de la table.
@@ -148,7 +155,7 @@ DATA_BASE commandDelete(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest
 */
 DATA_BASE commandUpdate(HeaderTable *header, FILE *file, SQL_REQUEST *sqlRequest);
 
-/*! \fn DATA_BASE checkCondition(HeaderTable *header, Condition *condition, char *record)
+/*! \fn DATA_BASE checkCondition(HeaderTable *header, WHERE_CLAUSE *where, char *record)
     \brief Cette fonction verifie si la clause WHERE est accomplie.
 
     \param hedader Référence à l'entête de la table.
