@@ -172,7 +172,6 @@ int pokemonProfil(int pokeId, DataBase *dataBase){
   Query *queryNature = NULL;
   Query *query = NULL;
   Query *queryGroup = NULL;
-  Query *queryEvolution = NULL;
   char  *field = NULL;
   char  *label = NULL;
   char pokeName[sizeName]="\0";
@@ -207,7 +206,7 @@ int pokemonProfil(int pokeId, DataBase *dataBase){
                   memcpy(&natureId, field, sizeof(int));
                   sprintf(textQuery,"SELECT name FROM Type WHERE id=\"%d\"", natureId); // Complete la requete SQL avec les pokeId
                   queryNature = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
-                  field = getDataQueryById(queryNature, 0,0);
+                  field = getDataQueryById(queryNature, 1,1);
                 } else {
                   INFO("%*s :  %*d", sizeLabel, label, sizeName, (int)*field);
                   break;
@@ -231,6 +230,7 @@ int pokemonProfil(int pokeId, DataBase *dataBase){
             DEBUG("%d lignes retournees",query->nbRecord);
             if (query->nbRecord>0) {
               for(int i = 0; i < query->nbRecord; i++) {
+                DEBUG("Passage dans boucle i");
                 for(int j = 0; j < query->descriptor.nbField; j++) {
                   field = getDataQueryById(query, i, j);
                   switch (getTypeQueryById(query, j)) {
@@ -238,9 +238,9 @@ int pokemonProfil(int pokeId, DataBase *dataBase){
                         DEBUG("Data int trouve");
                         memcpy(&groupId, field, sizeof(int));
                         sprintf(textQuery,"SELECT name FROM Group WHERE id=\"%d\"", natureId); // Complete la requete SQL avec les pokeId
-                        query = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
+                        queryGroup = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
                         DEBUG ("requete Group passe");
-                        field = getDataQueryById(query, i,j);
+                        field = getDataQueryById(queryGroup, j,0);
                     case DATA_FIELD_CHAR:
                       INFO("%*s : %*s", sizeLabel, "Groupe", sizeName, field);
                       break;
