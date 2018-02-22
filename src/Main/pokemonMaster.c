@@ -6,7 +6,7 @@
 #include "menu.h"
 
 
-int main (int argc, char const *argv[]) {
+int main(int argc, char const *argv[]) {
   DataBase *dataBase = NULL;
   Query *query = NULL;
 
@@ -41,9 +41,9 @@ int main (int argc, char const *argv[]) {
           break;
         }
       }
-    }
+    }*/
 
-    closeQuery(query);*/
+    closeQuery(query);
   }
 
   close(dataBase);
