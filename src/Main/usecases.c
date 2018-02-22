@@ -216,7 +216,7 @@ int pokemonProfil(int pokeId, DataBase *dataBase){
                   break;
                 }
               case DATA_FIELD_CHAR:
-                INFO("%*s : %*s", sizeLabel, label, sizeName, field);
+                INFO("%*s : %s", sizeLabel, label, field);
                 break;
               default:
                 break;

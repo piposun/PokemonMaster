@@ -25,10 +25,10 @@ void userRequestsMenu() { /* Menu d'affichage des cas d'utilisation de la base d
   MENU("2 --> Afficher le profil detaille d'un pokemon\n");
   MENU("3 --> Ajouter un pokemon a ma collection personnelle\n");
   MENU("4 --> Afficher la liste de mes pokemons [numero + noms]\n");
-  MENU("5 --> Afficher la liste des compatibilites d'accouplement d'un pokemon\n");
-  MENU("6 --> Afficher la liste des pokemons possedes et compatibles en accouplement d'un pokemon\n");
-  MENU("7 --> Modifier une caracteristique d'un pokemon dans la base de donnees\n");
-  MENU("8 --> Administrateur: Ajouter un pokemon dans la base de donnees\n");
+  //MENU("5 --> Afficher la liste des compatibilites d'accouplement d'un pokemon\n");
+  //MENU("6 --> Afficher la liste des pokemons possedes et compatibles en accouplement d'un pokemon\n");
+  //MENU("7 --> Modifier une caracteristique d'un pokemon dans la base de donnees\n");
+  //MENU("8 --> Administrateur: Ajouter un pokemon dans la base de donnees\n");
   MENU("9 --> Administrateur: Supprimer un pokemon dans la base de donnees\n");
   MENU("10--> Administrateur: Charger la base de donnees\n");
 }
@@ -69,10 +69,10 @@ void userRequestsSelection(int *requestChoice, DataBase *dataBase) {
             //updatePokemon(dataBase);
             break;
           case 8: /* Ajouter un pokemon dans la base */
-            MENU("\n\tSaisir le mot de passe administrateur (3 chiffes)\n");
+            MENU("\n\tSaisir le mot de passe administrateur (666)\n");
 
             if (keyboardInt(&password,0,999)==0) {
-              if(password==111){
+              if(password==666){
                 //addPokemon(dataBase);
                 break;
               }
@@ -85,10 +85,10 @@ void userRequestsSelection(int *requestChoice, DataBase *dataBase) {
               break;
             }
           case 9: /* Supprimer un pokemon dans la base */
-          MENU("\n\tSaisir le mot de passe administrateur (3 chiffres)\n");
+          MENU("\n\tSaisir le mot de passe administrateur (666)\n");
 
           if (keyboardInt(&password,0,999)==0) {
-            if(password==111){
+            if(password==666){
               deletePokemon(dataBase);
               break;
             }
@@ -101,10 +101,10 @@ void userRequestsSelection(int *requestChoice, DataBase *dataBase) {
             break;
           }
           case 10: /* Passer en mode administrateur pour charger la base de donnees */
-          MENU("\n\tSaisir le mot de passe administrateur (3 chiffres)\n");
+          MENU("\n\tSaisir le mot de passe administrateur (666)\n");
 
           if (keyboardInt(&password,0,999)==0) {
-            if(password==111){
+            if(password==666){
               MENU("Voulez vous restaurer la base de donnee? (0=non / 1=oui)");
               if (keyboardInt(&validation,0,1)==0) {
                 if (validation == 1) {
