@@ -8,11 +8,11 @@
 
 #include "keyboard.h"
 #include "usecases.h"
-
+/*
 int choicePokemon(int *pokeId){
 
-  int keyboardTest = 0; /* Variable de test de la selection des cas d'utilisation par l'operateur */
-  int requestChoice = 0; /* variable de selection du usecase de l'utilisateur */
+  int keyboardTest = 0; //Variable de test de la selection des cas d'utilisation par l'operateur
+  int requestChoice = 0; // variable de selection du usecase de l'utilisateur
   int pokeNum=0;
   char pokeName[sizeNum]={0};
   Query *query = NULL;
@@ -38,8 +38,8 @@ int choicePokemon(int *pokeId){
           ERROR("\n\n\tProbleme dans la saisie du Pokemon");
           return 1;
         } else {
-          textQuery=sprintf("SELECT id FROM Pokemon WHERE name="%s"", pokeName); /* Complete la requete SQL avec les pokeId*/
-          query = excuteQuery(dataBase, textQuery); /* Requete SQL */
+          textQuery=sprintf("SELECT id FROM Pokemon WHERE name="%s"", pokeName); // Complete la requete SQL avec les pokeId
+          query = excuteQuery(dataBase, textQuery); // Requete SQL
           *pokeId = getDataQueryById(query, 0, 0);
           break;
         }
@@ -50,8 +50,8 @@ int choicePokemon(int *pokeId){
           ERROR("\n\n\tProbleme dans la saisie du Pokemon");
           return 1;
         } else {
-          textQuery=sprintf("SELECT id FROM Pokemon WHERE num="%d"", pokeNum); /* Complete la requete SQL avec les pokeId*/
-          query = excuteQuery(dataBase, textQuery); /* Requete SQL */
+          textQuery=sprintf("SELECT id FROM Pokemon WHERE num="%d"", pokeNum); // Complete la requete SQL avec les pokeId
+          query = excuteQuery(dataBase, textQuery); // Requete SQL
           *pokeId = getDataQueryById(query, 0, 0);
          break;
         }
@@ -61,14 +61,15 @@ int choicePokemon(int *pokeId){
   }
   return 0;
 }
-
-void pokemonList(int pokeId){
+*/
+void pokemonList(int pokeId, DataBase *dataBase){
 
   Query *query = NULL;
   char  *field = NULL;
-  char num[]={Numero};
-  char name[]={Nom};
+  char num[]="Numero";
+  char name[]="Nom";
   char textQuery[255]={"SELECT num,name FROM Pokemon"};
+
 
   if (pokeId==0) { /* Le pokemon 0 n'existe pas, c'est donc une clé pour tous les afficher */
     query = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
@@ -78,7 +79,7 @@ void pokemonList(int pokeId){
     INFO("| %*s|\n", sizeName, name);
   }
   else{
-    textQuery=sprintf("SELECT num,name FROM Pokemon WHERE id=%s", pokeId); /* Complete la requete SQL avec les pokeId*/
+    sprintf(textQuery,"SELECT num,name FROM Pokemon WHERE id=\"%d\"", pokeId); /* Complete la requete SQL avec les pokeId*/
     query = excuteQuery(dataBase, textQuery); /* Requete SQL */
   }
 
@@ -110,7 +111,7 @@ void pokemonList(int pokeId){
     }
   }
 }
-
+/*
 void myPokemonList(void){
 
   Query *query = NULL;
@@ -138,9 +139,9 @@ void myPokemonList(void){
             switch (getTypeQueryById(query, j)) {
 
               case DATA_FIELD_INT:
-                DEBUG("%c, ", field); /* Affiche les pokeId reçus */
+                DEBUG("%c, ", field); // Affiche les pokeId reçus
                 memcpy(&fieldInt, field, sizeof(int));
-                pokemonList(fieldInt); /* Appel la fonction pokemonList pour remplir le tableau ligne par ligne*/
+                pokemonList(fieldInt);  // Appel la fonction pokemonList pour remplir le tableau ligne par ligne
               break;
 
               case DATA_FIELD_CHAR:
@@ -161,8 +162,6 @@ void myPokemonList(void){
       }
     }
 }
-
-
 
 void pokemonProfil(){
 
@@ -189,78 +188,6 @@ void allCouplingPossibilitiesPokemonList(){
 }
 
 void myCouplingPossibilitiesPokemonList(){
-}
-
-void addPokemon(){
-
-  int id=0, num=0, hp=0, atk=0, def=0, speAtk=0, speDef=0, height=0, weight=0, nature=0;
-  char name[20]={0}, desc[255]={0};
-  int keyboardTest=0;
-
-  MENU("\nVeuillez saisir le numero du pokemon: ");
-  keyboardTest=keyboardInt(&num, 0, 9999);
-  if (keyboardTest == 1) {
-    ERROR("\n\n\tProbleme dans la saisie du numero du Pokemon");
-  } else {
-    MENU("\nVeuillez saisir le nom du pokemon: ");
-    keyboardTest=keyboardChar(name, 20);
-    if (keyboardTest == 1) {
-      ERROR("\n\n\tProbleme dans la saisie du nom du Pokemon");
-    } else {
-      MENU("\nVeuillez saisir les points de vie du pokemon: ");
-      keyboardTest=keyboardInt(&hp, 0, 9999);
-      if (keyboardTest == 1) {
-        ERROR("\n\n\tProbleme dans la saisie des points de vie du Pokemon");
-      } else {
-        MENU("\nVeuillez saisir les points d'attaque du pokemon: ");
-        keyboardTest=keyboardInt(&atk, 0, 9999);
-        if (keyboardTest == 1) {
-          ERROR("\n\n\tProbleme dans la saisie des points d'attaque du Pokemon");
-        } else {
-          MENU("\nVeuillez saisir les points de defense du pokemon: ");
-          keyboardTest=keyboardInt(&def, 0, 9999);
-          if (keyboardTest == 1) {
-            ERROR("\n\n\tProbleme dans la saisie des points de defense du Pokemon");
-          } else {
-            MENU("\nVeuillez saisir les points d'attaque speciale du pokemon: ");
-            keyboardTest=keyboardInt(&speAtk, 0, 9999);
-            if (keyboardTest == 1) {
-              ERROR("\n\n\tProbleme dans la saisie des points d'attaque speciale du Pokemon");
-            } else {
-              MENU("\nVeuillez saisir les points de defense speciale du pokemon: ");
-              keyboardTest=keyboardInt(&speDef, 0, 9999);
-              if (keyboardTest == 1) {
-                ERROR("\n\n\tProbleme dans la saisie des points de defense speciale du Pokemon");
-              } else {
-                MENU("\nVeuillez saisir la taille du pokemon: ");
-                keyboardTest=keyboardInt(&height, 0, 9999);
-                if (keyboardTest == 1) {
-                  ERROR("\n\n\tProbleme dans la saisie de la taille du Pokemon");
-                } else {
-                  MENU("\nVeuillez saisir le poids du pokemon: ");
-                  keyboardTest=keyboardInt(&weight, 0, 9999);
-                  if (keyboardTest == 1) {
-                    ERROR("\n\n\tProbleme dans la saisie du poids du Pokemon");
-                  } else {
-                    MENU("\nVeuillez saisir le type de nature du pokemon: ");
-                    keyboardTest=keyboardInt(&nature, 0, 9999);
-                    if (keyboardTest == 1) {
-                      ERROR("\n\n\tProbleme dans la saisie du type de nature du Pokemon");
-                    } else {
-                      textQuery=sprintf("SELECT num,name FROM Pokemon WHERE id=%s", pokeId); /* Complete la requete SQL avec les pokeId*/
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-void updatePokemon(){
 }
 
 void deletePokemon(){ // Suppression d'un pokemon par l'admin
@@ -298,6 +225,15 @@ void deletePokemon(){ // Suppression d'un pokemon par l'admin
     closeQuery(query);
 }
 
+void addPokemon(){
+
+
+}
+
+void updatePokemon(){
+}
+
 void administrator(){
 
 }
+*/

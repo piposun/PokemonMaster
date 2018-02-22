@@ -1,6 +1,9 @@
 #ifndef HEADER_MENU
 #define HEADER_MENU
 
+#include "dataBase.h"
+#include"logger.h"
+
 /*! \file menu.h
     \brief Menu d'affichage et de selection des cas d'utilisation de la base de donnees.
     \version 0.1
@@ -8,6 +11,12 @@
     Permet d'afficher le menu à l'utilisateur et de selectionner les donnees qu'il souhaite afficher.
 */
 
+
+/*! \fn void menu(void);
+    \brief Fonction qui appel l'IHM.
+
+*/
+void menu(DataBase *dataBase);
 
 /*! \fn void userRequestsMenu(void);
     \brief Fonction qui affiche le menu des cas d'utilisation de la base de donnees.
@@ -19,6 +28,6 @@ void userRequestsMenu(void);
 
     \param requestChoice variable de selection saisie par l'utilisateur.
 */
-void userRequestsSelection(int *requestChoice);
+void userRequestsSelection(int *requestChoice, DataBase *dataBase);
 
 #endif /* HEADER_MENU */

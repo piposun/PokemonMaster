@@ -3,9 +3,10 @@
 #include "dataBase.h"
 #include "query.h"
 #include "logger.h"
+#include "menu.h"
 
 
-int main(int argc, char const *argv[]) {
+int main (int argc, char const *argv[]) {
   DataBase *dataBase = NULL;
   Query *query = NULL;
 
@@ -13,9 +14,9 @@ int main(int argc, char const *argv[]) {
   if (dataBase == NULL) {
     ERROR("Probleme dans l'ouverture des tables. Fermeture du programme !");
     return 1;
-  }
-
-  restoreTables(dataBase);
+  } else {
+    menu(dataBase);
+  /*restoreTables(dataBase);
 
   query = excuteQuery(dataBase, "SELECT * FROM Pokemon WHERE id=1");
 
@@ -42,7 +43,7 @@ int main(int argc, char const *argv[]) {
       }
     }
 
-    closeQuery(query);
+    closeQuery(query);*/
   }
 
   close(dataBase);
