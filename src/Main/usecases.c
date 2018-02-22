@@ -228,7 +228,6 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
 /*
 void addPokemon(){
 
-
 }
 
 void updatePokemon(){
