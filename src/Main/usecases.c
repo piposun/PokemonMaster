@@ -137,11 +137,8 @@ void myPokemonList(DataBase *dataBase){
         INFO("\nInventaire des Pokemons attrapes\n");
         INFO("-----------------------------");
         INFO("|%*s|%*s|", sizeNum, num, sizeName, name);
-DEBUG("TEST 1");
         for(int i = 0; i < query->nbRecord; i++) {
-          DEBUG("TEST 2");
           for(int j = 0; j < query->descriptor.nbField; j++) {
-                      DEBUG("TEST 3");
             field = getDataQueryById(query, i, j);
             switch (getTypeQueryById(query, j)) {
               case DATA_FIELD_INT:
@@ -213,7 +210,7 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
         MENU("\nEtes-vous sur de vouloir supprimer le pokemon? (0=non / 1=oui)");
         if (keyboardInt(&validation,0,1)==0) {
           if (validation == 1) {
-            sprintf(textQuery,"DELETE * FROM Pokemon WHERE id=\"%d\"", pokeId);
+            sprintf(textQuery,"DELETE FROM Pokemon WHERE id=\"%d\"", pokeId);
             query = excuteQuery(dataBase, textQuery);
             if (query == NULL) {
               MENU("Pokemon supprime");
