@@ -8,8 +8,8 @@
 
 #include "keyboard.h"
 #include "usecases.h"
-/*
-int choicePokemon(int *pokeId){
+
+int choicePokemon(int *pokeId, DataBase *dataBase){
 
   int keyboardTest = 0; //Variable de test de la selection des cas d'utilisation par l'operateur
   int requestChoice = 0; // variable de selection du usecase de l'utilisateur
@@ -17,8 +17,8 @@ int choicePokemon(int *pokeId){
   char pokeName[sizeNum]={0};
   Query *query = NULL;
   char  *field = NULL;
-  char num[]={Numero};
-  char name[]={Nom};
+  char num[]="Numero";
+  char name[]="Nom";
   char textQuery[255]={0};
 
   MENU("\nVoulez-vous choisir le Pokemon par :");
@@ -38,9 +38,9 @@ int choicePokemon(int *pokeId){
           ERROR("\n\n\tProbleme dans la saisie du Pokemon");
           return 1;
         } else {
-          textQuery=sprintf("SELECT id FROM Pokemon WHERE name="%s"", pokeName); // Complete la requete SQL avec les pokeId
+          sprintf(textQuery,"SELECT id FROM Pokemon WHERE name=\"%s\"", pokeName); // Complete la requete SQL avec les pokeId
           query = excuteQuery(dataBase, textQuery); // Requete SQL
-          *pokeId = getDataQueryById(query, 0, 0);
+          memcpy(&pokeId,getDataQueryById(query, 0, 0), sizeof(int));
           break;
         }
 
@@ -50,9 +50,9 @@ int choicePokemon(int *pokeId){
           ERROR("\n\n\tProbleme dans la saisie du Pokemon");
           return 1;
         } else {
-          textQuery=sprintf("SELECT id FROM Pokemon WHERE num="%d"", pokeNum); // Complete la requete SQL avec les pokeId
+          sprintf(textQuery,"SELECT id FROM Pokemon WHERE num=\"%d\"", pokeNum); // Complete la requete SQL avec les pokeId
           query = excuteQuery(dataBase, textQuery); // Requete SQL
-          *pokeId = getDataQueryById(query, 0, 0);
+          memcpy(&pokeId,getDataQueryById(query, 0, 0), sizeof(int));
          break;
         }
       default:
@@ -61,7 +61,7 @@ int choicePokemon(int *pokeId){
   }
   return 0;
 }
-*/
+
 void pokemonList(int pokeId, DataBase *dataBase){
 
   Query *query = NULL;
@@ -71,7 +71,7 @@ void pokemonList(int pokeId, DataBase *dataBase){
   char textQuery[255]={"SELECT num,name FROM Pokemon"};
 
 
-  if (pokeId==0) { /* Le pokemon 0 n'existe pas, c'est donc une clé pour tous les afficher */
+  if (pokeId==0) { // Le pokemon 0 n'existe pas, c'est donc une clé pour tous les afficher
     query = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
     INFO("\nInventaire des Pokemons dans la base\n");
     INFO("\n---------------------------------\n");
@@ -79,8 +79,8 @@ void pokemonList(int pokeId, DataBase *dataBase){
     INFO("| %*s|\n", sizeName, name);
   }
   else{
-    sprintf(textQuery,"SELECT num,name FROM Pokemon WHERE id=\"%d\"", pokeId); /* Complete la requete SQL avec les pokeId*/
-    query = excuteQuery(dataBase, textQuery); /* Requete SQL */
+    sprintf(textQuery,"SELECT num,name FROM Pokemon WHERE id=\"%d\"", pokeId); // Complete la requete SQL avec les pokeId
+    query = excuteQuery(dataBase, textQuery); // Requete SQL
   }
 
   if (query == NULL) {
@@ -111,13 +111,13 @@ void pokemonList(int pokeId, DataBase *dataBase){
     }
   }
 }
-/*
-void myPokemonList(void){
+
+void myPokemonList(DataBase *dataBase){
 
   Query *query = NULL;
   char  *field = NULL;
-  char num[]={Numero};
-  char name[]={Nom};
+  char num[]="Numero";
+  char name[]="Nom";
   char textQuery[255]={"SELECT id FROM Pos"};
   int fieldInt=0;
 
@@ -141,7 +141,7 @@ void myPokemonList(void){
               case DATA_FIELD_INT:
                 DEBUG("%c, ", field); // Affiche les pokeId reçus
                 memcpy(&fieldInt, field, sizeof(int));
-                pokemonList(fieldInt);  // Appel la fonction pokemonList pour remplir le tableau ligne par ligne
+                pokemonList(fieldInt,dataBase);  // Appel la fonction pokemonList pour remplir le tableau ligne par ligne
               break;
 
               case DATA_FIELD_CHAR:
@@ -162,7 +162,7 @@ void myPokemonList(void){
       }
     }
 }
-
+/*
 void pokemonProfil(){
 
   Query *query = NULL;
@@ -189,25 +189,25 @@ void allCouplingPossibilitiesPokemonList(){
 
 void myCouplingPossibilitiesPokemonList(){
 }
-
-void deletePokemon(){ // Suppression d'un pokemon par l'admin
+*/
+void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
   Query *query = NULL; // Pointeur de structure qui recupere les donnees suite a une requete
   char textQuery[255]={0}; // CHaine de caracteres contenant la requete SQL
   int pokeId=0, choiceTest=0, validation=0;
   char pokeName[sizeName]={0};
 
 
-  choiceTest=choicePokemon(&pokeId); // On appel la fonction pour selectionner l'id du pokemon demander par l'admin
+  choiceTest=choicePokemon(&pokeId,dataBase); // On appel la fonction pour selectionner l'id du pokemon demander par l'admin
   if (choiceTest == 1) {
     ERROR("\n\n\tProbleme dans la saisie du Pokemon");
   } else {
     if (choiceTest == 0) {
       if(pokeId != 0) {
-        pokemonProfil(&pokeId); // On affiche le profil complet du pokemon
+        //pokemonProfil(pokeId,dataBase); // On affiche le profil complet du pokemon
         MENU("\nEtes-vous sur de vouloir supprimer le pokemon? (0=non / 1=oui)");
         if (keyboardInt(&validation,0,1)==0) {
           if (validation == 1) {
-            textQuery=sprintf("DELETE * FROM Pokemon WHERE id="%d"", pokeId);
+            sprintf(textQuery,"DELETE * FROM Pokemon WHERE id=\"%d\"", pokeId);
             query = excuteQuery(dataBase, textQuery);
             if (query == NULL) {
               ERROR("Erreur dans la requete");
@@ -223,8 +223,9 @@ void deletePokemon(){ // Suppression d'un pokemon par l'admin
       }
     }
     closeQuery(query);
+  }
 }
-
+/*
 void addPokemon(){
 
 

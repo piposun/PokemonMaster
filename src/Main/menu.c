@@ -57,7 +57,7 @@ void userRequestsSelection(int *requestChoice, DataBase *dataBase) {
             //updatePokemonList(dataBase);
             break;
           case 4: /* Afficher la liste des pokemons possedes */
-            //myPokemonList(dataBase);
+            myPokemonList(dataBase);
             break;
           case 5: /* Acceder a la liste des compatibilites d'accouplement d'un pokemon */
             //allCouplingPossibilitiesPokemonList(dataBase);

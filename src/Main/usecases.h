@@ -50,7 +50,7 @@ void myPokemonList(DataBase *dataBase);
     \brief Cette fonction commande et affiche le profil detaille d'un pokemon demande par l'utilisateur.
 
 */
-void pokemonProfil(DataBase *dataBase);
+void pokemonProfil(int pokeId, DataBase *dataBase);
 
 /*! \fn void updatePokemonList(void);
     \brief Cette fonction commande l'ajout d'un pokemon a la liste des pokemons possedes par l'utilisateur.
