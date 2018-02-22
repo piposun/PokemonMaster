@@ -18,7 +18,7 @@
 /*! \def sizeNum
     \brief Definition de la taille colonne "num" + "hp" + "atk" + "def" + autres chiffres
 */
-#define sizeNum   8
+#define sizeNum   5
 
 /*! \def sizeDesc
     \brief Definition de la taille colonne "desc"
