@@ -76,7 +76,7 @@ void pokemonList(int pokeId, DataBase *dataBase){
     INFO("\nInventaire des Pokemons dans la base\n");
     INFO("\n---------------------------------\n");
     INFO("\n| %*s", sizeNum, num);
-    INFO("| %*s|\n", sizeName, name);
+    INFO("| %*s|", sizeName, name);
   }
   else{
     sprintf(textQuery,"SELECT num,name FROM Pokemon WHERE id=\"%d\"", pokeId); // Complete la requete SQL avec les pokeId
@@ -96,7 +96,7 @@ void pokemonList(int pokeId, DataBase *dataBase){
               INFO("| %*d", sizeNum, (int)*field);
               break;
             case DATA_FIELD_CHAR:
-              INFO("| %*s|\n",sizeName, field);
+              INFO("| %*s|",sizeName, field);
               break;
             default:
               break;
