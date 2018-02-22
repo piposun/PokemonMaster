@@ -206,7 +206,7 @@ int pokemonProfil(int pokeId, DataBase *dataBase){
                   memcpy(&natureId, field, sizeof(int));
                   sprintf(textQuery,"SELECT name FROM Type WHERE id=\"%d\"", natureId); // Complete la requete SQL avec les pokeId
                   queryNature = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
-                  field = getDataQueryById(queryNature, 1,1);
+                  field = getDataQueryById(queryNature, 0,0);
                 } else {
                   INFO("%*s :  %*d", sizeLabel, label, sizeName, (int)*field);
                   break;
@@ -217,7 +217,6 @@ int pokemonProfil(int pokeId, DataBase *dataBase){
               default:
                 break;
             }
-
           }
         }
         sprintf(textQuery,"SELECT id_group FROM JointGroup WHERE id_species=\"%d\"",pokeId);
@@ -230,17 +229,17 @@ int pokemonProfil(int pokeId, DataBase *dataBase){
             DEBUG("%d lignes retournees",query->nbRecord);
             if (query->nbRecord>0) {
               for(int i = 0; i < query->nbRecord; i++) {
-                DEBUG("Passage dans boucle i");
+                DEBUG("Passage dans boucle i : %d",i);
                 for(int j = 0; j < query->descriptor.nbField; j++) {
                   field = getDataQueryById(query, i, j);
+                  DEBUG("Passage dans boucle j : %d",j);
                   switch (getTypeQueryById(query, j)) {
                     case DATA_FIELD_INT:
-                        DEBUG("Data int trouve");
+                        DEBUG(" Valeur du groupe : %d", (int) * field);
                         memcpy(&groupId, field, sizeof(int));
-                        sprintf(textQuery,"SELECT name FROM Group WHERE id=\"%d\"", natureId); // Complete la requete SQL avec les pokeId
+                        sprintf(textQuery,"SELECT name FROM Group WHERE id=\"%d\"", groupId); // Complete la requete SQL avec les pokeId
                         queryGroup = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
-                        DEBUG ("requete Group passe");
-                        field = getDataQueryById(queryGroup, j,0);
+                        field = getDataQueryById(queryGroup, 0,0);
                     case DATA_FIELD_CHAR:
                       INFO("%*s : %*s", sizeLabel, "Groupe", sizeName, field);
                       break;
