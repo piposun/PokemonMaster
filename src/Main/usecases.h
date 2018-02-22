@@ -20,6 +20,11 @@
 */
 #define sizeNum   5
 
+/*! \def sizeLabel
+    \brief Definition du taille colonne "label"
+*/
+#define sizeLabel  20
+
 /*! \def sizeDesc
     \brief Definition de la taille colonne "desc"
 */
