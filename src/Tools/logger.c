@@ -14,14 +14,14 @@ void log_print(LEVEL_LOG level, int line, char *file, const char *format, ...)
   int dbgLevel = LEVEL_LOG_DEBUG; // Niveau de log par defaut
   int max_va_list_size = 4146;  // Taille max des arguments
   char* outColor;               // Pointer sur la couleur
-  char* va_msg;                 // Chaine des arguments
+  char* va_msg = NULL;                 // Chaine des arguments
   int msgSize;                  // Taille du message
-  char* msg;                    // Message
+  char* msg = NULL;                    // Message
   char info[255];
   va_list args;                 // Liste des arguments
 
   // Force la chaine à vide
-  info[0]=0;
+  memset(info, 0 , sizeof(char)*255);
 
   // Vérifie si les logs DEBUG doivent être affiché
   if ((!IS_DEBUG) && level == LEVEL_LOG_DEBUG) {
@@ -33,6 +33,7 @@ void log_print(LEVEL_LOG level, int line, char *file, const char *format, ...)
 
   // Allocation de la chaine de caractere des arguments
   va_msg = (char*)malloc(strlen(format) + max_va_list_size);
+  memset(va_msg, 0 , strlen(format) + max_va_list_size);
 
   // Creation de la chaine de caractere des arguments
   vsnprintf(va_msg, strlen(format) + max_va_list_size, format, args);
@@ -46,6 +47,7 @@ void log_print(LEVEL_LOG level, int line, char *file, const char *format, ...)
 
   // Allocation de la variable du message complet
   msg = (char*)malloc(msgSize);
+  memset(msg, 0 , msgSize);
 
   if(level != LEVEL_LOG_INFO && level != LEVEL_LOG_MENU) {
     sprintf(msg, "\t%s", info);
