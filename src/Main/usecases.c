@@ -9,10 +9,17 @@
 #include "keyboard.h"
 #include "usecases.h"
 
-int choixPokemon(int *pokeId, char *pokeName){
+int choicePokemon(int *pokeId){
 
   int keyboardTest = 0; /* Variable de test de la selection des cas d'utilisation par l'operateur */
   int requestChoice = 0; /* variable de selection du usecase de l'utilisateur */
+  int pokeNum=0;
+  char pokeName[sizeNum]={0};
+  Query *query = NULL;
+  char  *field = NULL;
+  char num[]={Numero};
+  char name[]={Nom};
+  char textQuery[255]={0};
 
   MENU("\nVoulez-vous choisir le Pokemon par :");
   MENU("\n1 - Son Nom");
@@ -31,18 +38,23 @@ int choixPokemon(int *pokeId, char *pokeName){
           ERROR("\n\n\tProbleme dans la saisie du Pokemon");
           return 1;
         } else {
+          textQuery=sprintf("SELECT id FROM Pokemon WHERE name="%s"", pokeName); /* Complete la requete SQL avec les pokeId*/
+          query = excuteQuery(dataBase, textQuery); /* Requete SQL */
+          *pokeId = getDataQueryById(query, 0, 0);
           break;
         }
 
       case 2:
-        keyboardTest=keyboardInt(pokeId, 0, 9999);
+        keyboardTest=keyboardInt(&pokeNum, 0, 9999);
         if (keyboardTest == 1) {
           ERROR("\n\n\tProbleme dans la saisie du Pokemon");
           return 1;
         } else {
+          textQuery=sprintf("SELECT id FROM Pokemon WHERE num="%d"", pokeNum); /* Complete la requete SQL avec les pokeId*/
+          query = excuteQuery(dataBase, textQuery); /* Requete SQL */
+          *pokeId = getDataQueryById(query, 0, 0);
          break;
         }
-
       default:
         break;
     }
@@ -263,26 +275,26 @@ void deletePokemon(){
 
 
   choiceTest=choixPokemon(&pokeId, pokeName);
-  if (choiceTest == 0) {
+  if (choiceTest == 1) {
     ERROR("\n\n\tProbleme dans la saisie du Pokemon");
   } else {
-    if (choiceTest == 1) {
-      // TODO ajouter la fonction pokemonProfil
-      MENU("Etes-vous sur de vouloir supprimer le pokemon numero: %d? (0=NON / 1=oui)",pokeId);
-      if (keyboardInt(&validation,0,1)==0) {
-        if (validation == 1)
-          textQuery=sprintf("DELETE * FROM Pokemon WHERE id=%d", pokeId); // Complete la requete SQL avec les pokeId
-          query = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
-          if (query == NULL) {
-            ERROR("Erreur dans la requete");
+    if (choiceTest == 0) {
+      if(pokeId != 0) {
+        pokemonProfil()
+        MENU("Etes-vous sur de vouloir supprimer le pokemon numero: %d? (0=NON / 1=oui)",pokeId);
+        if (keyboardInt(&validation,0,1)==0) {
+          if (validation == 1)
+            textQuery=sprintf("DELETE * FROM Pokemon WHERE id=%d", pokeId); // Complete la requete SQL avec les pokeId
+            query = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
+            if (query == NULL) {
+              ERROR("Erreur dans la requete");
+            } else {
+              ???// Que nous retourne la requete en cas de bonne suppression?
+            }
           } else {
-            ???// Que nous retourne la requete en cas de bonne suppression?
+            MENU("Suppression du pokemon numero: %d annulee",pokeId);
           }
-        } else {
-          MENU("Suppression du pokemon numero: %d annulee",pokeId);
-      }
-    }
-    if (choiceTest == 2) {
+      } else {
       // TODO ajouter la fonction pokemonProfil
       MENU("Etes-vous sur de vouloir supprimer le pokemon %s? (0=NON / 1=oui)",pokeName);
       if (keyboardInt(&validation,0,1)==0) {
@@ -298,6 +310,7 @@ void deletePokemon(){
           MENU("Suppression du pokemon numero %s annulee",pokeName);
         }
       }
+    }
   }
   closeQuery(query);
 }

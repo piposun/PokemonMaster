@@ -23,13 +23,12 @@
 #define sizeDesc   200
 
 /*! \fn int choixPokemon(int *pokeId, char *pokeName);
-    \brief Cette fonction traite le choix et la saisie du nom ou id d'un pokemon par l'utilisateur .
+    \brief Cette fonction traite la saisie d'un pokemon par son nom ou son numero et renvoi l'id correspondant.
 
     \param pokeId pointeur sur variable contenant l'id du pokemon.
-    \param pokeName pointeur sur variable contenant le nom du pokemon.
     \return La fonction renvoie un entier de valeur 0 si la saisie s'est deroulee sans erreur et 1 si erreur de saisie
 */
-int choixPokemon(int *pokeId, char *pokeName);
+int choicePokemon(int *pokeId);
 
 /*! \fn void pokemonList(int pokeId);
     \brief Cette fonction commande et affiche la liste de tous les pokemons.
