@@ -16,7 +16,6 @@ int main(int argc, char const *argv[]) {
     return 1;
   } else {
     menu(dataBase);
-    closeQuery(query);
   }
 
   close(dataBase);
