@@ -22,7 +22,7 @@ int keyboardChar(char *string, int nbCharMax) { /*  On passe à la fonction la v
         nbCharMax=nbDigitMax;  // 5 équivalent à 99999
       }
       else{ /* Sinon c'est une demande de chaine de caracteres */
-        MENU("\nVeuillez saisir vos donnees au clavier, attention %d caracteres maximum : ",nbCharMax-1) ;
+        MENU("Veuillez saisir vos donnees au clavier, attention %d caracteres maximum : ",nbCharMax-1) ;
       }
 
       do {
@@ -42,10 +42,10 @@ int keyboardChar(char *string, int nbCharMax) { /*  On passe à la fonction la v
         }
 
         if(strlen(string)==0) {
-          MENU("\nVous devez saisir au moins un caractère. Veuillez saisir une donnee correcte : ");}
+          MENU("Vous devez saisir au moins un caractère. Veuillez saisir une donnee correcte : ");}
         else{
           if(max>0) {
-            MENU("\nVous avez saisi trop de caractère. Veuillez saisir une donnee correcte : ");
+            MENU("Vous avez saisi trop de caractère. Veuillez saisir une donnee correcte : ");
           }
         }
 
@@ -61,7 +61,7 @@ int keyboardInt(int *number, int min, int max) { /*  On passe à la fonction la 
     char numberText[nbDigitMax]; // équivalent à 99999
 
     do {
-      MENU("chiffre compris entre %d et %d : ",min,max );
+      MENU("Chiffre compris entre %d et %d : ",min,max );
 
       if (keyboardChar(numberText,nbCharMax)==0){ /*  On appel la fonction saisie clavier que l'on test egalement  */
           sscanf(numberText,"%d", &numberTemp); /*converti la chaine de caractere en int */
