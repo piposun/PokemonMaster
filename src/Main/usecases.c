@@ -165,28 +165,82 @@ void myPokemonList(DataBase *dataBase){
       }
     }
 }
-/*
-void pokemonProfil(){
 
-  Query *query = NULL;
+int pokemonProfil(int pokeId, DataBase *dataBase){
+
+  Query *queryPokemon = NULL;
+  Query *queryIndexGroup = NULL;
+  Query *queryGroup = NULL;
+  Query *queryEvolution = NULL;
   char  *field = NULL;
-
+  char  *label = NULL;
   char pokeName[sizeName]="\0";
-  int pokeId=0, choiceTest=0;
+  int  choiceTest=0;
   char textQuery[255]={"SELECT * FROM Pokemon"};
 
-  choiceTest=choicePokemon(&pokeId);
-  if (pokeId!=0){ // Le pokemon 0 n'existe pas, c'est donc une clé pour traiter par nom
-    textQuery=sprintf("SELECT * FROM Pokemon WHERE id=%d", pokeId); // Complete la requete SQL avec les pokeId
-    query = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
+  if (pokeId==0){ // Le pokemon 0 n'existe pas, c'est donc qu'il faut demander le choix du Pokemon
+    choiceTest=choicePokemon(&pokeId, dataBase);
+    if (choiceTest == 1) {
+      ERROR("\n\n\tProbleme dans la saisie du Pokemon");
+      return 1; // Erreur
+    }
   }
-  else{
-    textQuery=sprintf("SELECT * FROM Pokemon WHERE name=%s", pokeName); // Complete la requete SQL avec les pokeId
-    query = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
+  if (pokeId!=0){
+    sprintf(textQuery,"SELECT * FROM Pokemon WHERE id=\"%d\"", pokeId); // Complete la requete SQL avec les pokeId
+    queryPokemon = excuteQuery(dataBase, textQuery);  // Requete sur l'ensemble de la base
+    if (queryPokemon == NULL) {
+      ERROR("Erreur dans la requete");
+      return 1; //Erreur
+    }
+    else{
+      DEBUG("Pokemon trouve");
+      if (queryPokemon->nbRecord>0) {
+        DEBUG("Pokemon avec des donnees");
+        for(int i = 0; i < queryPokemon->nbRecord; i++) {
+          for(int j = 0; j < queryPokemon->descriptor.nbField; j++) {
+            field = getDataQueryById(queryPokemon, i, j);
+            label = getNameQueryById(queryPokemon, j);
+            switch (getTypeQueryById(queryPokemon, j)) {
+              case DATA_FIELD_INT:
+                INFO("%*s :  %*d", sizeLabel, label, sizeName, (int)*field);
+                break;
+              case DATA_FIELD_CHAR:
+                INFO("%*s : %*s", sizeLabel, label, sizeName, field);
+                break;
+              default:
+                break;
+            }
+        /*  sprintf(textQuery,"SELECT group_id FROM JointGroup WHERE poke_id=/"%s/"",pokeId);
+          queryPokemon = excuteQuery(dataBase, textQuery);  // Requete sur la base
+          if (query == NULL) {
+            ERROR("\nErreur dans la requete sur la table JointGroup\n");
+            return 1; //Erreur
+          }
+          else{
+            if (query->nbRecord>0) {
+              for(int i = 0; i < query->nbRecord; i++) {
+                for(int j = 0; j < query->descriptor.nbField; j++) {
+                  field = getDataQueryById(queryPokemon, i, j);
+                  INFO("\nGroupe : ",label);
+                  .....................................................................................................................................................................................................................................................................
+                  switch (getTypeQueryById(query, j)) {
+                    case DATA_FIELD_INT:
+                      INFO(" %*d", sizeNum, (int)*field);
+                      break;
+                    case DATA_FIELD_CHAR:
+                      INFO(" %*s|\n",sizeName, field);
+                      break;
+                    default:
+                      break;
+                  }
+          }*/
+        }
+      }
+    }
   }
-
 }
-
+}
+/*
 void allCouplingPossibilitiesPokemonList(){
 }
 

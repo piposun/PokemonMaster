@@ -51,7 +51,7 @@ void userRequestsSelection(int *requestChoice, DataBase *dataBase) {
             pokemonList(0,dataBase); /* 0 indique liste complete sans selection */
             break;
           case 2: /* Afficher le profil detaille d'un pokemon */
-            //pokemonProfil(dataBase);
+            pokemonProfil(0,dataBase); // 0 indique qu'il faudra demander quel Pokemon afficher
             break;
           case 3: /* Ajouter un pokemon a ma collection personnelle */
             updatePokemonList(dataBase);

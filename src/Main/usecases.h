@@ -23,7 +23,7 @@
 /*! \def sizeLabel
     \brief Definition du taille colonne "label"
 */
-#define sizeLabel  20
+#define sizeLabel  10
 
 /*! \def sizeDesc
     \brief Definition de la taille colonne "desc"
@@ -55,7 +55,7 @@ void myPokemonList(DataBase *dataBase);
     \brief Cette fonction commande et affiche le profil detaille d'un pokemon demande par l'utilisateur.
 
 */
-void pokemonProfil(int pokeId, DataBase *dataBase);
+int pokemonProfil(int pokeId, DataBase *dataBase);
 
 /*! \fn void updatePokemonList(void);
     \brief Cette fonction commande l'ajout d'un pokemon a la liste des pokemons possedes par l'utilisateur.
