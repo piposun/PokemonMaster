@@ -140,8 +140,10 @@ void myPokemonList(DataBase *dataBase){
         for(int i = 0; i < query->nbRecord; i++) {
           for(int j = 0; j < query->descriptor.nbField; j++) {
             field = getDataQueryById(query, i, j);
+            DEBUG("TEST1");
             switch (getTypeQueryById(query, j)) {
               case DATA_FIELD_INT:
+                DEBUG("TEST2");
                 DEBUG("%c, ", field); // Affiche les pokeId reçus
                 memcpy(&fieldInt, field, sizeof(int));
                 pokemonList(fieldInt,dataBase);  // Appel la fonction pokemonList pour remplir le tableau ligne par ligne

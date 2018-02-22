@@ -34,67 +34,80 @@
     \brief Cette fonction traite la saisie d'un pokemon par son nom ou son numero et renvoi l'id correspondant.
 
     \param pokeId pointeur sur variable contenant l'id du pokemon.
+    \param dataBase pointeur sur la base de donnees.
     \return La fonction renvoie un entier de valeur 0 si la saisie s'est deroulee sans erreur et 1 si erreur de saisie
 */
 int choicePokemon(int *pokeId, DataBase *dataBase);
 
-/*! \fn void pokemonList(int pokeId);
+/*! \fn void pokemonList(int pokeId, DataBase *dataBase);
     \brief Cette fonction commande et affiche la liste de tous les pokemons.
 
+    \param dataBase pointeur sur la base de donnees.
     \param pokeId pointeur sur variable contenant l'id du pokemon.
 */
 void pokemonList(int pokeId, DataBase *dataBase);
 
-/*! \fn void myPokemonList(void);
+/*! \fn void myPokemonList(DataBase *dataBase);
     \brief Cette fonction commande et affiche la liste des pokemons possedes par l'utilisateur.
 
+    \param dataBase pointeur sur la base de donnees.
 */
 void myPokemonList(DataBase *dataBase);
 
-/*! \fn void pokemonProfil(void);
+/*! \fn void pokemonProfil(int pokeId, DataBase *dataBase);
     \brief Cette fonction commande et affiche le profil detaille d'un pokemon demande par l'utilisateur.
 
+    \param dataBase pointeur sur la base de donnees.
 */
 void pokemonProfil(int pokeId, DataBase *dataBase);
 
-/*! \fn void updatePokemonList(void);
+/*! \fn void updatePokemonList(DataBase *dataBase);
     \brief Cette fonction commande l'ajout d'un pokemon a la liste des pokemons possedes par l'utilisateur.
 
+    \param dataBase pointeur sur la base de donnees.
 */
 void updatePokemonList(DataBase *dataBase);
 
-/*! \fn void allCouplingPossibilitiesPokemonList();
+/*! \fn void allCouplingPossibilitiesPokemonList(DataBase *dataBase);
     \brief Cette fonction commande et affiche la liste des compatibilitees d'accouplement d'un pokemon saisi par l'utilisateur.
 
+    \param dataBase pointeur sur la base de donnees.
 */
 void allCouplingPossibilitiesPokemonList(DataBase *dataBase);
 
-/*! \fn myCouplingPossibilitiesPokemonList();
+/*! \fn myCouplingPossibilitiesPokemonList(DataBase *dataBase);
     \brief Cette fonction commande et affiche la liste des pokemon possedes et compatibles en accouplement d'un pokemon saisi par l'utilisateur.
 
+    \param dataBase pointeur sur la base de donnees.
 */
 void myCouplingPossibilitiesPokemonList(DataBase *dataBase);
 
-/*! \fn void updatePokemon();
+/*! \fn void updatePokemon(DataBase *dataBase);
     \brief Cette fonction commande et modifie une caracteristique pokemon saisie par l'administrateur.
 
+    \param dataBase pointeur sur la base de donnees.
 */
 void updatePokemon(DataBase *dataBase);
 
-/*! \fn void addPokemon();
+/*! \fn void addPokemon(DataBase *dataBase);
     \brief Cette fonction commande l'ajout d'un pokemon dans la base de donnees par l'administrateur.
+
+    \param dataBase pointeur sur la base de donnees.
 */
 void addPokemon(DataBase *dataBase);
 
-/*! \fn void deletePokemon();
+/*! \fn void deletePokemon(DataBase *dataBase);
     \brief Cette fonction commande la suppression d'un pokemon dans la base de donnees par l'administrateur, placement du "#" dans le fichier.
+
+    \param dataBase pointeur sur la base de donnees.
 */
 void deletePokemon(DataBase *dataBase);
 
 
-/*! \fn void administrator();
-    \brief Cette fonction TODO.
+/*! \fn void administrator(DataBase *dataBase);
+    \brief Cette fonction permet le rechargement des donnees de la base.
 
+    \param dataBase pointeur sur la base de donnees.
 */
 void administrator(DataBase *dataBase); /*prototype fonction: Passage en mode administration*/
 

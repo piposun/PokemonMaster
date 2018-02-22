@@ -2,7 +2,7 @@
 #define HEADER_MENU
 
 #include "dataBase.h"
-#include"logger.h"
+#include "logger.h"
 
 /*! \file menu.h
     \brief Menu d'affichage et de selection des cas d'utilisation de la base de donnees.
@@ -12,9 +12,9 @@
 */
 
 
-/*! \fn void menu(void);
+/*! \fn void menu(DataBase *dataBase);
     \brief Fonction qui appel l'IHM.
-
+    \param dataBase pointeur sur la base de donnees.
 */
 void menu(DataBase *dataBase);
 
@@ -27,6 +27,7 @@ void userRequestsMenu(void);
     \brief Fonction qui selectionne le bon cas d'utilisation en fonction de la demande utilisateur.
 
     \param requestChoice variable de selection saisie par l'utilisateur.
+    \param dataBase pointeur sur la base de donnees.
 */
 void userRequestsSelection(int *requestChoice, DataBase *dataBase);
 
