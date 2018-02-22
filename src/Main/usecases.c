@@ -138,12 +138,16 @@ void myPokemonList(DataBase *dataBase){
         INFO("-----------------------------");
         INFO("|%*s|%*s|", sizeNum, num, sizeName, name);
         for(int i = 0; i < query->nbRecord; i++) {
+          DEBUG("Passage dans la boucle i : %d",i);
           for(int j = 0; j < query->descriptor.nbField; j++) {
+            DEBUG("Passage dans la boucle j : %d",j);
             field = getDataQueryById(query, i, j);
+            DEBUG("Valeur de id : %d", (int) * field);
             switch (getTypeQueryById(query, j)) {
               case DATA_FIELD_INT:
-                DEBUG("%c, ", field); // Affiche les pokeId reçus
+                DEBUG("Dans la condition INT"); // Affiche les pokeId reçus
                 memcpy(&fieldInt, field, sizeof(int));
+                DEBUG("Valeur envoyer a pokemonList : %d",fieldInt);
                 pokemonList(fieldInt,dataBase);  // Appel la fonction pokemonList pour remplir le tableau ligne par ligne
               break;
 
@@ -280,7 +284,7 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
   } else {
     if (choiceTest == 0) {
       if(pokeId != 0) {
-        //pokemonProfil(pokeId,dataBase); // On affiche le profil complet du pokemon
+        pokemonProfil(pokeId,dataBase); // On affiche le profil complet du pokemon
         MENU("\nEtes-vous sur de vouloir supprimer le pokemon? (0=non / 1=oui)");
         if (keyboardInt(&validation,0,1)==0) {
           if (validation == 1) {
@@ -305,7 +309,6 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
 /*
 void addPokemon(){
 
-
 }
 
 void updatePokemon(){
@@ -325,7 +328,7 @@ void updatePokemonList(DataBase *dataBase){
   } else {
     if (choiceTest == 0) {
       if(pokeId != 0) {
-        //pokemonProfil(pokeId,dataBase); // On affiche le profil complet du pokemon
+        pokemonProfil(pokeId,dataBase); // On affiche le profil complet du pokemon
         MENU("\nEtes-vous sur de vouloir ajouter le pokemon? (0=non / 1=oui)");
         if (keyboardInt(&validation,0,1)==0) {
           if (validation == 1) {
