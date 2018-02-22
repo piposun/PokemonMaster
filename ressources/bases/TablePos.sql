@@ -1,0 +1,1 @@
+CREATE TABLE Pos (id PRIMARY_KEY, poke_id INT)
