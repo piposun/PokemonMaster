@@ -61,7 +61,7 @@ int keyboardInt(int *number, int min, int max) { /*  On passe à la fonction la 
     char numberText[nbDigitMax]; // équivalent à 99999
 
     do {
-      MENU("\nVeuillez saisir un nombre entier compris entre %d et %d : ",min,max );
+      MENU("chiffre compris entre %d et %d : ",min,max );
 
       if (keyboardChar(numberText,nbCharMax)==0){ /*  On appel la fonction saisie clavier que l'on test egalement  */
           sscanf(numberText,"%d", &numberTemp); /*converti la chaine de caractere en int */

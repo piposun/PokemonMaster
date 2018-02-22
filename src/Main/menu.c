@@ -19,7 +19,7 @@ void menu(DataBase *dataBase) {
 }
 
 void userRequestsMenu() { /* Menu d'affichage des cas d'utilisation de la base de donnee*/
-  MENU("\n*** MENU POKEMONS ***\n");
+  MENU("\n\t\t*** MENU POKEMONS ***\n");
   MENU("0 --> Quitter le programme\n");
   MENU("1 --> Afficher la liste de tous les pokemons [numero + noms]\n");
   MENU("2 --> Afficher le profil detaille d'un pokemon\n");
@@ -69,14 +69,15 @@ void userRequestsSelection(int *requestChoice, DataBase *dataBase) {
             //updatePokemon(dataBase);
             break;
           case 8: /* Ajouter un pokemon dans la base */
-            MENU("\nSaisir le mot de passe administrateur (3 chiffes)\n");
+            MENU("\n\tSaisir le mot de passe administrateur (3 chiffes)\n");
 
-            if (keyboardInt(&password,0,999)==1) {
+            if (keyboardInt(&password,0,999)==0) {
               if(password==111){
                 //addPokemon(dataBase);
+                break;
               }
               else
-                MENU("\nMot de passe incorrect\n");
+                ERROR("\nMot de passe incorrect\n");
               break;
             }
             else {
@@ -84,14 +85,15 @@ void userRequestsSelection(int *requestChoice, DataBase *dataBase) {
               break;
             }
           case 9: /* Supprimer un pokemon dans la base */
-          MENU("\nSaisir le mot de passe administrateur (3 chiffes)\n");
+          MENU("\n\tSaisir le mot de passe administrateur (3 chiffres)\n");
 
-          if (keyboardInt(&password,0,999)==1) {
+          if (keyboardInt(&password,0,999)==0) {
             if(password==111){
-              //deletePokemon(dataBase);
+              deletePokemon(dataBase);
+              break;
             }
             else
-              MENU("\nMot de passe incorrect\n");
+              ERROR("\nMot de passe incorrect\n");
             break;
           }
           else {
@@ -99,14 +101,15 @@ void userRequestsSelection(int *requestChoice, DataBase *dataBase) {
             break;
           }
           case 10: /* Passer en mode administrateur pour charger la base de donnees */
-          MENU("\nSaisir le mot de passe administrateur (3 chiffes)\n");
+          MENU("\n\tSaisir le mot de passe administrateur (3 chiffres)\n");
 
-          if (keyboardInt(&password,0,999)==1) {
+          if (keyboardInt(&password,0,999)==0) {
             if(password==111){
               //administrator(dataBase);
+              break;
             }
             else
-              MENU("\nMot de passe incorrect\n");
+              ERROR("\nMot de passe incorrect\n");
             break;
           }
           else {
