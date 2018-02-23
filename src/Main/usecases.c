@@ -41,10 +41,15 @@ int choicePokemon(int *pokeId, DataBase *dataBase){
         } else {
           sprintf(textQuery,"SELECT id FROM Pokemon WHERE name=\"%s\"", pokeName); // Complete la requete SQL avec les pokeId
           query = excuteQuery(dataBase, textQuery); // Requete SQL
-          ptPokeId = getDataQueryById(query, 0, 0);
-          memcpy(pokeId,ptPokeId, sizeof(int));
-          closeQuery(query);
-          break;
+          if (query == NULL) {
+            ERROR("\nErreur dans la requete sur la table JointGroup\n");
+            return 1; //Erreur
+          } else {
+            ptPokeId = getDataQueryById(query, 0, 0);
+            memcpy(pokeId,ptPokeId, sizeof(int));
+            closeQuery(query);
+            break;
+          }
         }
 
       case 2:
@@ -55,10 +60,15 @@ int choicePokemon(int *pokeId, DataBase *dataBase){
         } else {
           sprintf(textQuery,"SELECT id FROM Pokemon WHERE num=\"%d\"", pokeNum); // Complete la requete SQL avec les pokeId
           query = excuteQuery(dataBase, textQuery); // Requete SQL
-          ptPokeId = getDataQueryById(query, 0, 0);
-          memcpy(pokeId,ptPokeId, sizeof(int));
-          closeQuery(query);
-         break;
+          if (query == NULL) {
+            ERROR("\nErreur dans la requete sur la table JointGroup\n");
+            return 1; //Erreur
+          } else {
+            ptPokeId = getDataQueryById(query, 0, 0);
+            memcpy(pokeId,ptPokeId, sizeof(int));
+            closeQuery(query);
+            break;
+         }
         }
       default:
         break;
@@ -124,7 +134,7 @@ void myPokemonList(DataBase *dataBase){
   char  *field = NULL;
   char num[]="Numero";
   char name[]="Nom";
-  char textQuery[255]={"SELECT id FROM Pos"};
+  char textQuery[255]={"SELECT poke_id FROM Pos"};
   int fieldInt=0;
 
     query = excuteQuery(dataBase, textQuery);
@@ -145,12 +155,11 @@ void myPokemonList(DataBase *dataBase){
             DEBUG("Valeur de id : %d", (int) * field);
             switch (getTypeQueryById(query, j)) {
               case DATA_FIELD_INT:
-                DEBUG("Dans la condition INT"); // Affiche les pokeId reçus
+                DEBUG("Dans la condition INT");
                 memcpy(&fieldInt, field, sizeof(int));
                 DEBUG("Valeur envoyer a pokemonList : %d",fieldInt);
                 pokemonList(fieldInt,dataBase);  // Appel la fonction pokemonList pour remplir le tableau ligne par ligne
               break;
-
               case DATA_FIELD_CHAR:
               {
                 ERROR("\nLes donnes retournees ne sont pas des nombres Id\n");
@@ -291,12 +300,12 @@ void deletePokemon(DataBase *dataBase){ // Suppression d'un pokemon par l'admin
             sprintf(textQuery,"DELETE FROM Pokemon WHERE id=\"%d\"", pokeId);
             query = excuteQuery(dataBase, textQuery);
             if (query == NULL) {
-              MENU("Pokemon supprime");
+              MENU("\nPokemon supprime");
             } else {
-              ERROR("Erreur dans la requete");
+              ERROR("\nErreur dans la requete");
             }
           } else {
-            MENU("Suppression du pokemon annulee");
+            MENU("\nSuppression du pokemon annulee");
           }
         } else {
           MENU("\nProbleme dans la saisie de la validation");
@@ -335,12 +344,12 @@ void updatePokemonList(DataBase *dataBase){
             sprintf(textQuery,"INSERT INTO Pos VALUES (\"%d\")", pokeId);
             query = excuteQuery(dataBase, textQuery);
             if (query == NULL) {
-              MENU("Pokemon ajoute");
+              MENU("\nPokemon ajoute");
             } else {
-              ERROR("Erreur dans la requete");
+              ERROR("\nErreur dans la requete");
             }
           } else {
-            MENU("Ajout du pokemon annulee");
+            MENU("\nAjout du pokemon annulee");
           }
         } else {
           MENU("\nProbleme dans la saisie de la validation");

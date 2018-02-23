@@ -7,7 +7,7 @@
 
 #include "logger.h"
 
-#define IS_DEBUG 1 // 1 : Log BEBUG affiché / 0 : Log DEBUG caché
+#define IS_DEBUG 0 // 1 : Log BEBUG affiché / 0 : Log DEBUG caché
 
 void log_print(LEVEL_LOG level, int line, char *file, const char *format, ...)
 {
