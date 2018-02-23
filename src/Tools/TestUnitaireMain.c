@@ -10,7 +10,8 @@ int main(int argc, char const *argv[]) {
   INFO("Test %d %s", numTest, "OK"); numTest++;
   DEBUG("Test %d %s", numTest, "OK"); numTest++;
   WARN("Test %d %s", numTest, "OK"); numTest++;
-  ERROR("Test %d %s", numTest, "OK");
+  ERROR("Test %d %s", numTest, "OK"); numTest++;
+  MENU("Test %d %s", numTest, "OK");
 
   // Test openfile
   if (openFile(&file, pathName, "r+") == 1) {
