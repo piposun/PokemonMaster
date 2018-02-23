@@ -97,21 +97,21 @@ void userRequestsSelection(int *requestChoice, DataBase *dataBase) {
             break;
           }
           else {
-            ERROR("\n\n\tProbleme dans la saisie du mot de passe");
+            ERROR("Probleme dans la saisie du mot de passe");
             break;
           }
           case 10: /* Passer en mode administrateur pour charger la base de donnees */
-          MENU("\n\tSaisir le mot de passe administrateur (666)\n");
+          MENU("\n\tSaisir le mot de passe administrateur (999)\n");
 
           if (keyboardInt(&password,0,999)==0) {
-            if(password==666){
+            if(password==999){
               MENU("Voulez vous restaurer la base de donnee? (0=non / 1=oui)");
               if (keyboardInt(&validation,0,1)==0) {
                 if (validation == 1) {
                   administrator(dataBase);
                   break;
                 } else {
-                  MENU("Restauration annulee");
+                  MENU("\nRestauration annulee");
                   break;
                 }
               } else {
