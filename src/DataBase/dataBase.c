@@ -87,13 +87,15 @@ void closeTables(DataBase *dataBase) {
 }
 
 FILE* searchTable(DataBase *dataBase, char* nameTable) {
-  for(int i = 0; i < dataBase->nbTable; i++) {
-    if (strcmp(dataBase->tables[i].name, nameTable) == 0) {
-      return dataBase->tables[i].file;
+  if (strlen(nameTable) > 1) {
+    for(int i = 0; i < dataBase->nbTable; i++) {
+      if (strcmp(dataBase->tables[i].name, nameTable) == 0) {
+        return dataBase->tables[i].file;
+      }
     }
-  }
 
-  WARN("Table %s non trouvee.", nameTable);
+    WARN("Table %s non trouvee.", nameTable);
+  }
 
   return NULL;
 }
