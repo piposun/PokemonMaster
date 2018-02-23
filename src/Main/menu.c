@@ -109,6 +109,7 @@ void userRequestsSelection(int *requestChoice, DataBase *dataBase) {
               if (keyboardInt(&validation,0,1)==0) {
                 if (validation == 1) {
                   administrator(dataBase);
+                  MENU("\nTables reinitialisees");
                   break;
                 } else {
                   MENU("\nRestauration annulee");

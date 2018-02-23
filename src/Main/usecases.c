@@ -45,8 +45,12 @@ int choicePokemon(int *pokeId, DataBase *dataBase){
             ERROR("\nErreur dans la requete sur la table JointGroup\n");
             return 1; //Erreur
           } else {
-            ptPokeId = getDataQueryById(query, 0, 0);
-            memcpy(pokeId,ptPokeId, sizeof(int));
+            if(query->nbRecord==1){
+              ptPokeId = getDataQueryById(query, 0, 0);
+              memcpy(pokeId,ptPokeId, sizeof(int));
+            } else {
+              INFO("\nImpossible de trouver un Pokemon avec ces caracteristiques.");
+            }
             closeQuery(query);
             break;
           }
@@ -64,14 +68,18 @@ int choicePokemon(int *pokeId, DataBase *dataBase){
             ERROR("\nErreur dans la requete sur la table JointGroup\n");
             return 1; //Erreur
           } else {
-            ptPokeId = getDataQueryById(query, 0, 0);
-            memcpy(pokeId,ptPokeId, sizeof(int));
+            if(query->nbRecord==1){
+              ptPokeId = getDataQueryById(query, 0, 0);
+              memcpy(pokeId,ptPokeId, sizeof(int));
+            } else{
+              INFO("\nImpossible de trouver un Pokemon avec ces caracteristiques.");
+            }
             closeQuery(query);
             break;
+          }
          }
-        }
       default:
-        break;
+      break;
     }
   }
   return 0;
@@ -360,36 +368,7 @@ void updatePokemonList(DataBase *dataBase){
 }
 
 void administrator(DataBase *dataBase){
-Query *query = NULL;
 
-restoreTables(dataBase);
+  restoreTables(dataBase);
 
-query = excuteQuery(dataBase, "SELECT * FROM Pokemon WHERE id=1");
-
-  if (query != NULL) {
-    for(int i = 0; i < query->nbRecord; i++) {
-      char * field;
-      for(int j = 0; j < query->descriptor.nbField; j++) {
-        field = getDataQueryById(query, i, j);
-        switch (getTypeQueryById(query, j)) {
-          case DATA_FIELD_PK:
-          case DATA_FIELD_INT:
-          {
-            DEBUG("Champ %d %s : %d", j+1, getNameQueryById(query, j), (int)*field);
-          }
-          break;
-          case DATA_FIELD_CHAR:
-          {
-            DEBUG("Champ %d %s : %s",j+1, getNameQueryById(query, j), field);
-          }
-          break;
-          default:
-          break;
-        }
-      }
-    }
-
-    closeQuery(query);
-
-  }
 }
