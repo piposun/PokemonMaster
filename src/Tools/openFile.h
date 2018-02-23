@@ -10,13 +10,16 @@
 
 #include <stdio.h>
 
+/*! \struct ListFiles
+    \brief Gere la liste des noms de fichier.
+*/
 typedef struct {
-  char **nameFiles;
-  char extension[50];
-  int nbFiles;
+  char **nameFiles; /**< List des nom de fichier */
+  char extension[50]; /**< Contient l'extension des fichiers */
+  int nbFiles;  /**< Contient le nombre de fichiers */
 } ListFiles;
 
-/*! \enum
+/*! \enum OPEN_FILE
     \brief Gere la valeur de retour.
 */
 typedef enum {
@@ -34,18 +37,19 @@ typedef enum {
 */
 int openFile(FILE **file, char *pathName, char *mode);
 
-/*! \fn ListFiles *getListFile()
-    \brief TODO
+/*! \fn ListFiles *getListFile(char *pathRep, char *extension)
+    \brief Cette fonction fournie la liste des nom des fichiers dans un répertoire.
 
-    \param TODO
-    \param TODO
+    \param pathRep Chemin d'accès du répertoire
+    \param extension Extension des fichiers à récupérer
+    \return Renvoie la référence de la liste des fichiers
 */
 ListFiles *getListFile(char *pathRep, char *extension);
 
-/*! \fn int closeListFile()
-    \brief TODO
+/*! \fn void closeListFile(ListFiles *list)
+    \brief Cette fonction libère les listes des fichiers.
 
-    \param TODO
+    \param list Référence à la liste des fichiers
 */
 void closeListFile(ListFiles *list);
 

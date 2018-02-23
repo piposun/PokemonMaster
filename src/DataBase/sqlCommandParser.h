@@ -1,6 +1,13 @@
 #ifndef HEADER_SQL_PARSER
 #define HEADER_SQL_PARSER
 
+/*! \file sqlCommandParser.h
+    \brief Parser des commandes SQL
+    \version 0.1
+
+    Contient les fonctions du parser des commandes SQL.
+*/
+
 #define maxArraySize (15)
 #define maxStringSize (30)
 #define nbMaxClauses (8)
@@ -58,7 +65,7 @@ typedef struct{
 */
 void mapStringArray (char targetArray[][maxStringSize],char sourceArray[][maxStringSize],int size);
 
-/*! \fn  splitString(char* sqlQuerry,char stringArray[][maxStringSize],int *arraySize)
+/*! \fn  void splitString(char* sqlQuerry,char stringArray[][maxStringSize],int *arraySize,const char *splitCharacter)
     \brief Cette fonction sépare une chaine de characteres par le séparateur " " en tableau de chaine de caractère.
     \param sqlQuerry chaine de characteres à séparer.
     \param stringArray tableau de chaine de characteres recevant les valeurs de la chaine séparé.

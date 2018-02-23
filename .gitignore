@@ -1,5 +1,6 @@
 bin/
-doc/
+doc/html
+doc/latex
 lib/
 include/
 LINUX_GCC/
